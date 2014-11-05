@@ -12,18 +12,18 @@
 
 #include "Graph.hpp"
 
-struct DijkstraEdge {
-  Vertex v;
-  Weight dist;
-  DijkstraEdge(Vertex v, Weight dist) : v(v), dist(dist) {
-    
-  }
-  bool operator<(const DijkstraEdge& other) const {
-    return dist > other.dist;
-  }
-};
-
 inline Weight dijkstra(const Graph& G, Vertex s, Vertex d) {
+  struct DijkstraEdge {
+    Vertex v;
+    Weight dist;
+    DijkstraEdge(Vertex v, Weight dist) : v(v), dist(dist) {
+      
+    }
+    bool operator<(const DijkstraEdge& other) const {
+      return dist > other.dist;
+    }
+  };
+  
   Weight* dist = new Weight[G.size() + 1];
   for (Vertex v = 1; v <= Vertex(G.size()); v++) {
     dist[v] = INF;
