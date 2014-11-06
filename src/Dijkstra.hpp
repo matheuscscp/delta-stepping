@@ -33,15 +33,15 @@ inline Weight dijkstra(const Graph& G, Vertex s, Vertex d) {
   Q.push(Edge(s, 0));
   
   while (!Q.empty()) {
-    Edge unode = Q.top();
+    Edge edge = Q.top();
     Q.pop();
     
-    if (unode.v == d) break;
-    if (unode.dist > dist[unode.v]) continue;
+    if (edge.v == d) break;
+    if (edge.dist > dist[edge.v]) continue;
     
-    const std::map<Vertex, Weight>& u = G.at(unode.v);
+    const std::map<Vertex, Weight>& u = G.at(edge.v);
     for (auto& kv : u) {
-      Weight alt = unode.dist + kv.second;
+      Weight alt = edge.dist + kv.second;
       if (alt < dist[kv.first]) {
         dist[kv.first] = alt;
         Q.push(Edge(kv.first, alt));
