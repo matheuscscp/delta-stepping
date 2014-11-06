@@ -14,9 +14,9 @@
 using namespace std;
 
 typedef AllPairsShortestPaths<25> APSP;
-static int maxN = 4;
+static int maxN = 20;
 static Weight maxWeight = 50;
-static int maxGs = 100;
+static int maxGs = 1000;
 
 static inline bool scanAndCompare() {
   Graph G = scanUndirectedGraph(stdin);
