@@ -12,7 +12,7 @@
 
 #include "Graph.hpp"
 
-inline Weight dijkstra(const Graph& G, Vertex s, Vertex d) {
+inline Weight dijkstra(const Graph& G, Vertex source, Vertex target) {
   struct Path {
     Vertex v;
     Weight dist;
@@ -28,15 +28,15 @@ inline Weight dijkstra(const Graph& G, Vertex s, Vertex d) {
   for (Vertex v = 1; v <= Vertex(G.size()); v++) {
     dist[v] = INF;
   }
-  dist[s] = 0;
+  dist[source] = 0;
   std::priority_queue<Path> Q;
-  Q.push(Path(s, 0));
+  Q.push(Path(source, 0));
   
   while (!Q.empty()) {
     Path edge = Q.top();
     Q.pop();
     
-    if (edge.v == d) break;
+    if (edge.v == target) break;
     if (edge.dist > dist[edge.v]) continue;
     
     const std::map<Vertex, Weight>& u = G.at(edge.v);
@@ -49,9 +49,9 @@ inline Weight dijkstra(const Graph& G, Vertex s, Vertex d) {
     }
   }
   
-  Weight w = dist[d];
+  Weight dist_target = dist[target];
   delete[] dist;
-  return w;
+  return dist_target;
 }
 
 #endif /* DIJKSTRA_HPP_ */

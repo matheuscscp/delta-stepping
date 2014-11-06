@@ -47,10 +47,10 @@ Graph scanDirectedGraph(FILE* fp) {
   
   // reading edges
   for (int m = 0; m < M; m++) {
-    Vertex s, d;
+    Vertex source, target;
     Weight w;
-    fscanf(fp, "%d %d %d", &s, &d, &w);
-    G[s][d] = w;
+    fscanf(fp, "%d %d %d", &source, &target, &w);
+    G[source][target] = w;
   }
   
   return G;

@@ -26,21 +26,21 @@ class AllPairsShortestPaths {
     };
     
     int N;
-    Data* result;
+    Data* res;
   public:
     AllPairsShortestPaths(
       const Graph& G,
       std::function<Weight(const Graph&, Vertex, Vertex)> spfunc
-    ) : N(G.size()), result(new Data) {
+    ) : N(G.size()), res(new Data) {
       for (auto& kv : G) {
         for (auto& kv2 : G) {
-          result->data[kv.first][kv2.first] = spfunc(G, kv.first, kv2.first);
+          res->data[kv.first][kv2.first] = spfunc(G, kv.first, kv2.first);
         }
       }
     }
     
     ~AllPairsShortestPaths() {
-      delete result;
+      delete res;
     }
     
     bool operator==(const AllPairsShortestPaths& other) {
@@ -48,9 +48,9 @@ class AllPairsShortestPaths {
         return false;
       }
       
-      for (Vertex s = 1; s <= N; s++) {
-        for (Vertex d = 1; d <= N; d++) {
-          if (result->data[s][d] != other.result->data[s][d]) {
+      for (Vertex source = 1; source <= N; source++) {
+        for (Vertex target = 1; target <= N; target++) {
+          if (res->data[source][target] != other.res->data[source][target]) {
             return false;
           }
         }
@@ -64,9 +64,9 @@ class AllPairsShortestPaths {
         return true;
       }
       
-      for (Vertex s = 1; s <= N; s++) {
-        for (Vertex d = 1; d <= N; d++) {
-          if (result[s][d] != other.result[s][d]) {
+      for (Vertex source = 1; source <= N; source++) {
+        for (Vertex target = 1; target <= N; target++) {
+          if (res->data[source][target] != other.res->data[source][target]) {
             return true;
           }
         }
@@ -77,9 +77,9 @@ class AllPairsShortestPaths {
     
     void print(FILE* fp, const char* funcname) {
       fprintf(fp, "%s:\n", funcname);
-      for (Vertex s = 1; s <= N; s++) {
-        for (Vertex d = 1; d <= N; d++) {
-          Weight w = result->data[s][d];
+      for (Vertex source = 1; source <= N; source++) {
+        for (Vertex target = 1; target <= N; target++) {
+          Weight w = res->data[source][target];
           if (w == INF) {
             fprintf(fp, "  inf ");
           }
