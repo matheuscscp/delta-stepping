@@ -30,12 +30,14 @@ class AllPairsShortestPaths {
   public:
     AllPairsShortestPaths(
       const Graph& G,
-      std::function<Weight(const Graph&, Vertex, Vertex)> spfunc
+      std::function<Weight*(const Graph&, Vertex)> spfunc
     ) : N(G.size()), res(new Data) {
       for (auto& kv : G) {
+        Weight* shortest_path_tree = spfunc(G, kv.first);
         for (auto& kv2 : G) {
-          res->data[kv.first][kv2.first] = spfunc(G, kv.first, kv2.first);
+          res->data[kv.first][kv2.first] = shortest_path_tree[kv2.first];
         }
+        delete[] shortest_path_tree;
       }
     }
     

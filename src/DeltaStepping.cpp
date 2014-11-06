@@ -16,18 +16,23 @@
 using namespace std;
 
 struct DeltaStepping {
+  // in
   const Graph& G;
-  const Vertex& s;
+  Vertex source;
   
+  // local
   map<Vertex, list<Vertex>> heavy, light;
-  map<Vertex, Weight> tent;
   vector<list<Vertex>> B;
   
-  DeltaStepping(const Graph& G, const Vertex& s) : G(G), s(s) {
+  // out
+  Weight* tent; // tentative distance. equals distance after the algorithm
+  
+  DeltaStepping(const Graph& G, Vertex source) : G(G), source(source) {
     algorithm();
   }
   
   void algorithm() {
+    tent = new Weight[G.size() + 1];
     for (auto& v : G) {
       list<Vertex>& h = heavy[v.first];
       list<Vertex>& l = light[v.first];
@@ -42,7 +47,7 @@ struct DeltaStepping {
       }
       tent[v.first] = INF;
     }
-    relax(s, 0);
+    relax(source, 0);
     size_t i;
     for (i = 0; i < B.size(); i++) {
       list<Vertex> S;
@@ -95,6 +100,6 @@ struct DeltaStepping {
   }
 };
 
-Weight deltaStepping(const Graph& G, Vertex s, Vertex d) {
-  return DeltaStepping(G, s).tent[d];
+Weight* deltaStepping(const Graph& G, Vertex source) {
+  return DeltaStepping(G, source).tent;
 }

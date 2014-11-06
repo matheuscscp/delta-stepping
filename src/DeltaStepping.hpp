@@ -10,6 +10,6 @@
 
 #include "Graph.hpp"
 
-Weight deltaStepping(const Graph& G, Vertex s, Vertex d);
+Weight* deltaStepping(const Graph& G, Vertex source);
 
 #endif /* DELTASTEPPING_HPP_ */

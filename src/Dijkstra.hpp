@@ -12,7 +12,7 @@
 
 #include "Graph.hpp"
 
-inline Weight dijkstra(const Graph& G, Vertex source, Vertex target) {
+inline Weight* dijkstra(const Graph& G, Vertex source) {
   struct Path {
     Vertex v;
     Weight dist;
@@ -37,7 +37,6 @@ inline Weight dijkstra(const Graph& G, Vertex source, Vertex target) {
     Path edge = Q.top();
     Q.pop();
     
-    if (edge.v == target) break;
     if (edge.dist > dist[edge.v]) {
       i--;
       continue;
@@ -53,9 +52,7 @@ inline Weight dijkstra(const Graph& G, Vertex source, Vertex target) {
     }
   }
   
-  Weight dist_target = dist[target];
-  delete[] dist;
-  return dist_target;
+  return dist;
 }
 
 #endif /* DIJKSTRA_HPP_ */
