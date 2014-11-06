@@ -12,7 +12,7 @@
 
 #include "Graph.hpp"
 
-inline Weight* dijkstra(const Graph& G, Vertex source) {
+inline void dijkstra(const Graph& G, Vertex source, Weight* dist) {
   struct Path {
     Vertex v;
     Weight dist;
@@ -25,7 +25,6 @@ inline Weight* dijkstra(const Graph& G, Vertex source) {
   };
   
   Vertex N = int(G.size());
-  Weight* dist = new Weight[N + 1];
   for (Vertex v = 1; v <= N; v++) {
     dist[v] = INF;
   }
@@ -51,8 +50,6 @@ inline Weight* dijkstra(const Graph& G, Vertex source) {
       }
     }
   }
-  
-  return dist;
 }
 
 #endif /* DIJKSTRA_HPP_ */

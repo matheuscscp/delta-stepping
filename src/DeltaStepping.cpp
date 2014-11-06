@@ -27,12 +27,13 @@ struct DeltaStepping {
   // out
   Weight* tent; // tentative distance. equals distance after the algorithm
   
-  DeltaStepping(const Graph& G, Vertex source) : G(G), source(source) {
+  DeltaStepping(const Graph& G, Vertex source, Weight* tent) :
+  G(G), source(source), tent(tent)
+  {
     algorithm();
   }
   
   void algorithm() {
-    tent = new Weight[G.size() + 1];
     for (auto& v : G) {
       list<Vertex>& h = heavy[v.first];
       list<Vertex>& l = light[v.first];
@@ -100,6 +101,6 @@ struct DeltaStepping {
   }
 };
 
-Weight* deltaStepping(const Graph& G, Vertex source) {
-  return DeltaStepping(G, source).tent;
+void deltaStepping(const Graph& G, Vertex source, Weight* dist) {
+  DeltaStepping(G, source, dist);
 }
