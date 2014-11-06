@@ -13,13 +13,13 @@
 #include "Graph.hpp"
 
 inline Weight dijkstra(const Graph& G, Vertex s, Vertex d) {
-  struct Edge {
+  struct Path {
     Vertex v;
     Weight dist;
-    Edge(Vertex v, Weight dist) : v(v), dist(dist) {
+    Path(Vertex v, Weight dist) : v(v), dist(dist) {
       
     }
-    bool operator<(const Edge& other) const {
+    bool operator<(const Path& other) const {
       return dist > other.dist;
     }
   };
@@ -29,11 +29,11 @@ inline Weight dijkstra(const Graph& G, Vertex s, Vertex d) {
     dist[v] = INF;
   }
   dist[s] = 0;
-  std::priority_queue<Edge> Q;
-  Q.push(Edge(s, 0));
+  std::priority_queue<Path> Q;
+  Q.push(Path(s, 0));
   
   while (!Q.empty()) {
-    Edge edge = Q.top();
+    Path edge = Q.top();
     Q.pop();
     
     if (edge.v == d) break;
@@ -44,7 +44,7 @@ inline Weight dijkstra(const Graph& G, Vertex s, Vertex d) {
       Weight alt = edge.dist + kv.second;
       if (alt < dist[kv.first]) {
         dist[kv.first] = alt;
-        Q.push(Edge(kv.first, alt));
+        Q.push(Path(kv.first, alt));
       }
     }
   }
