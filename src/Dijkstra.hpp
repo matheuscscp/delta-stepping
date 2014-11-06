@@ -24,20 +24,24 @@ inline Weight dijkstra(const Graph& G, Vertex source, Vertex target) {
     }
   };
   
-  Weight* dist = new Weight[G.size() + 1];
-  for (Vertex v = 1; v <= Vertex(G.size()); v++) {
+  Vertex N = int(G.size());
+  Weight* dist = new Weight[N + 1];
+  for (Vertex v = 1; v <= N; v++) {
     dist[v] = INF;
   }
   dist[source] = 0;
   std::priority_queue<Path> Q;
   Q.push(Path(source, 0));
   
-  while (!Q.empty()) {
+  for (Vertex i = 0; !Q.empty() && i < N; i++) {
     Path edge = Q.top();
     Q.pop();
     
     if (edge.v == target) break;
-    if (edge.dist > dist[edge.v]) continue;
+    if (edge.dist > dist[edge.v]) {
+      i--;
+      continue;
+    }
     
     const std::map<Vertex, Weight>& u = G.at(edge.v);
     for (auto& kv : u) {
