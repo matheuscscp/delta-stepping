@@ -101,6 +101,6 @@ struct DeltaStepping {
   }
 };
 
-void deltaStepping(const Graph& G, Vertex source, Weight* dist) {
+void serial_deltaStepping(const Graph& G, Vertex source, Weight* dist) {
   DeltaStepping(G, source, dist);
 }

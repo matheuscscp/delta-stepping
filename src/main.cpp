@@ -23,7 +23,7 @@ static inline bool scanAndCompare() {
   
   APSP dijkstraResult(G, &dijkstra);
   dijkstraResult.print(stdout, "dijkstra");
-  APSP deltaResult(G, &deltaStepping);
+  APSP deltaResult(G, &serial_deltaStepping);
   deltaResult.print(stdout, "delta stepping");
   
   return dijkstraResult == deltaResult;
@@ -34,7 +34,7 @@ static inline bool generateAndCompare() {
   Graph G = generateGraph(rand()%(maxN - 1) + 2, maxWeight);
   
   APSP dijkstraResult(G, &dijkstra);
-  APSP deltaResult(G, &deltaStepping);
+  APSP deltaResult(G, &serial_deltaStepping);
   
   return dijkstraResult == deltaResult;
 }
