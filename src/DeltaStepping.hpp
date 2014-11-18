@@ -10,6 +10,8 @@
 
 #include "Graph.hpp"
 
-void serial_deltaStepping(const Graph& G, Vertex source, Weight* dist);
+void serial_deltaStepping(
+  const graph::Graph& G, graph::Vertex source, graph::Weight* dist
+);
 
 #endif /* DELTASTEPPING_HPP_ */

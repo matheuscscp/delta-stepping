@@ -12,6 +12,7 @@
 #include "DeltaStepping.hpp"
 
 using namespace std;
+using namespace graph;
 
 typedef AllPairsShortestPaths<25> APSP;
 static int maxN = 20;

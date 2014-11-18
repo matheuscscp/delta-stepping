@@ -13,6 +13,8 @@
 #include <functional>
 #include <cstdio>
 
+namespace graph {
+
 typedef int Size;
 typedef int Vertex;
 typedef int Weight;
@@ -321,5 +323,7 @@ void printDirectedGraph(const Graph& G, FILE* fp);
  * maxWeight: will generate weights in [1, maxWeight]
  */
 void generateGraph(Graph& G, int N, Weight maxWeight);
+
+} // namespace graph
 
 #endif /* GRAPH_HPP_ */

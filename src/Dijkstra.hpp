@@ -12,7 +12,11 @@
 
 #include "Graph.hpp"
 
-inline void dijkstra(const Graph& G, Vertex source, Weight* dist) {
+inline void dijkstra(
+  const graph::Graph& G, graph::Vertex source, graph::Weight* dist
+) {
+  using namespace graph;
+  
   Size N = G.order();
   for (Vertex v = 1; v <= N; v++) {
     dist[v] = INFINITE;

@@ -14,6 +14,7 @@
 #define DELTA 5
 
 using namespace std;
+using namespace graph;
 
 struct DeltaStepping {
   // in

@@ -11,6 +11,8 @@
 
 using namespace std;
 
+namespace graph {
+
 Edge::Edge(Vertex vertex, Weight weight) : vertex(vertex), weight(weight) {
   
 }
@@ -269,3 +271,5 @@ void generateGraph(Graph& G, int N, Weight maxWeight) {
     }
   }
 }
+
+} // namespace graph
