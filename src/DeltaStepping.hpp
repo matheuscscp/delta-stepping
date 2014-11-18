@@ -10,12 +10,12 @@
 
 #include "Graph.hpp"
 
-void serial_deltaStepping(
-  const graph::Graph& G, graph::Vertex source, graph::Weight* dist
-);
+template <typename Weight, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
+void serial_deltaStepping(const graph::Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist);
 
-void parallel_deltaStepping(
-  const graph::Graph& G, graph::Vertex source, graph::Weight* dist
-);
+template <typename Weight, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
+void parallel_deltaStepping(const graph::Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist);
+
+#include "DeltaStepping.inl.hpp"
 
 #endif /* DELTASTEPPING_HPP_ */

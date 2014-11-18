@@ -13,103 +13,29 @@ using namespace std;
 
 namespace graph {
 
-Edge::Edge(Vertex vertex, Weight weight) : vertex(vertex), weight(weight) {
-  
-}
-
-bool Edge::operator<(const Edge& other) const {
-  return weight > other.weight;
-}
-
-Neighbourhood::Iterator::Iterator(Iterator* it, Iterator* itend) :
-it(it), itend(itend)
-{
-  if (it == nullptr) {
-    return;
-  }
-  while (
-    this->it->operator!=(*(this->itend)) &&
-    this->it->operator*().weight == INFINITE
-  ) {
-    this->it->operator++();
-  }
-}
-
-Neighbourhood::Iterator::~Iterator() {
-  
-}
-
-bool Neighbourhood::Iterator::operator!=(const Iterator& other) const {
-  return it->operator!=(*other.it);
-}
-
-Edge Neighbourhood::Iterator::operator*() {
-  return it->operator*();
-}
-
-Neighbourhood::Iterator& Neighbourhood::Iterator::operator++() {
-  do {
-    it->operator++();
-  } while (it->operator!=(*itend) && it->operator*().weight == INFINITE);
-  return *this;
-}
-
-Neighbourhood::Neighbourhood(Vertex vertex) : vertex(vertex) {
-  
-}
-
-Neighbourhood::~Neighbourhood() {
-  
-}
-
-Graph::Iterator::Iterator(Iterator* it) : it(it) {
-  
-}
-
-Graph::Iterator::~Iterator() {
-  
-}
-
-bool Graph::Iterator::operator!=(const Iterator& other) const {
-  return it->operator!=(*other.it);
-}
-
-Neighbourhood& Graph::Iterator::operator*() {
-  return it->operator*();
-}
-
-Graph::Iterator& Graph::Iterator::operator++() {
-  it->operator++();
-  return *this;
-}
-
-Graph::~Graph() {
-  
-}
-
-ArrayNeighbourhood::Iterator::Iterator(Edge* ptr) :
-Neighbourhood::Iterator(nullptr, nullptr), ptr(ptr)
+ArrayNeighbourhood::Iterator::Iterator(Edge<int, 0x7fffffff>* ptr) :
+Neighbourhood<int, 0x7fffffff>::Iterator(nullptr, nullptr), ptr(ptr)
 {
   
 }
 
 bool ArrayNeighbourhood::Iterator::operator!=(
-  const Neighbourhood::Iterator& other
+  const Neighbourhood<int, 0x7fffffff>::Iterator& other
 ) const {
   return ptr != ((ArrayNeighbourhood::Iterator&)other).ptr;
 }
 
-Edge ArrayNeighbourhood::Iterator::operator*() {
+Edge<int, 0x7fffffff> ArrayNeighbourhood::Iterator::operator*() {
   return *ptr;
 }
 
-Neighbourhood::Iterator& ArrayNeighbourhood::Iterator::operator++() {
+Neighbourhood<int, 0x7fffffff>::Iterator& ArrayNeighbourhood::Iterator::operator++() {
   ptr++;
   return *this;
 }
 
 ArrayNeighbourhood::ArrayNeighbourhood() :
-size_(0), data(new Edge[0]), degree_(0)
+size_(0), data(new Edge<int, 0x7fffffff>[0]), degree_(0)
 {
   
 }
@@ -118,176 +44,103 @@ ArrayNeighbourhood::~ArrayNeighbourhood() {
   delete[] data;
 }
 
-Neighbourhood::Iterator ArrayNeighbourhood::begin() const {
-  return Neighbourhood::Iterator(
+Neighbourhood<int, 0x7fffffff>::Iterator ArrayNeighbourhood::begin() const {
+  return Neighbourhood<int, 0x7fffffff>::Iterator(
     new Iterator(data), new Iterator(data + size_)
   );
 }
 
-Neighbourhood::Iterator ArrayNeighbourhood::end() const {
-  return Neighbourhood::Iterator(
+Neighbourhood<int, 0x7fffffff>::Iterator ArrayNeighbourhood::end() const {
+  return Neighbourhood<int, 0x7fffffff>::Iterator(
     new Iterator(data + size_), new Iterator(data + size_)
   );
 }
 
-Edge ArrayNeighbourhood::operator[](Vertex v) const {
+Edge<int, 0x7fffffff> ArrayNeighbourhood::operator[](int v) const {
   return data[v - 1];
 }
 
-Size ArrayNeighbourhood::degree() const {
+int ArrayNeighbourhood::degree() const {
   return degree_;
 }
 
-void ArrayNeighbourhood::resize(Size new_size) {
-  Edge* tmp = new Edge[new_size];
+void ArrayNeighbourhood::resize(int new_size) {
+  Edge<int, 0x7fffffff>* tmp = new Edge<int, 0x7fffffff>[new_size];
   degree_ = 0;
-  for (Size i = 0; i < new_size && i < size_; i++) {
-    Weight w = data[i].weight;
+  for (int i = 0; i < new_size && i < size_; i++) {
+    int w = data[i].weight;
     tmp[i].weight = w;
-    if (w < INFINITE) {
+    if (w < 0x7fffffff) {
       degree_++;
     }
   }
   size_ = new_size;
   delete[] data;
   data = tmp;
-  for (Size i = 0; i < size_; i++) {
+  for (int i = 0; i < size_; i++) {
     data[i].vertex = i + 1;
   }
 }
 
-void ArrayNeighbourhood::edge(Vertex v, Weight w) {
-  if (data[v - 1].weight < INFINITE && w == INFINITE) {
+void ArrayNeighbourhood::edge(int v, int w) {
+  if (data[v - 1].weight < 0x7fffffff && w == 0x7fffffff) {
     degree_--;
   }
-  else if (data[v - 1].weight == INFINITE && w < INFINITE) {
+  else if (data[v - 1].weight == 0x7fffffff && w < 0x7fffffff) {
     degree_++;
   }
   data[v - 1].weight = w;
 }
 
-MapNeighbourhood::Iterator::Iterator(map<Vertex, Edge>::const_iterator mapit) :
-Neighbourhood::Iterator(nullptr, nullptr), mapit(mapit)
+MapNeighbourhood::Iterator::Iterator(map<int, Edge<int, 0x7fffffff>>::const_iterator mapit) :
+Neighbourhood<int, 0x7fffffff>::Iterator(nullptr, nullptr), mapit(mapit)
 {
   
 }
 
 bool MapNeighbourhood::Iterator::operator!=(
-  const Neighbourhood::Iterator& other
+  const Neighbourhood<int, 0x7fffffff>::Iterator& other
 ) const {
   return mapit != ((Iterator&)other).mapit;
 }
 
-Edge MapNeighbourhood::Iterator::operator*() {
+Edge<int, 0x7fffffff> MapNeighbourhood::Iterator::operator*() {
   return mapit->second;
 }
 
-Neighbourhood::Iterator& MapNeighbourhood::Iterator::operator++() {
+Neighbourhood<int, 0x7fffffff>::Iterator& MapNeighbourhood::Iterator::operator++() {
   mapit++;
   return *this;
 }
 
-Neighbourhood::Iterator MapNeighbourhood::begin() const {
-  return Neighbourhood::Iterator(
+Neighbourhood<int, 0x7fffffff>::Iterator MapNeighbourhood::begin() const {
+  return Neighbourhood<int, 0x7fffffff>::Iterator(
     new Iterator(data.begin()), new Iterator(data.end())
   );
 }
 
-Neighbourhood::Iterator MapNeighbourhood::end() const {
-  return Neighbourhood::Iterator(
+Neighbourhood<int, 0x7fffffff>::Iterator MapNeighbourhood::end() const {
+  return Neighbourhood<int, 0x7fffffff>::Iterator(
     new Iterator(data.end()), new Iterator(data.end())
   );
 }
 
-Edge MapNeighbourhood::operator[](Vertex v) const {
+Edge<int, 0x7fffffff> MapNeighbourhood::operator[](int v) const {
   return data.at(v);
 }
 
-Size MapNeighbourhood::degree() const {
+int MapNeighbourhood::degree() const {
   return data.size();
 }
 
-void MapNeighbourhood::edge(Vertex v, Weight w) {
-  if (w == INFINITE) {
+void MapNeighbourhood::edge(int v, int w) {
+  if (w == 0x7fffffff) {
     data.erase(v);
   }
   else {
-    Edge& data_v = data[v];
+    Edge<int, 0x7fffffff>& data_v = data[v];
     data_v.vertex = v;
     data_v.weight = w;
-  }
-}
-
-AllPairsShortestPaths::AllPairsShortestPaths(
-  const Graph& G,
-  function<void(const Graph&, Vertex, Weight*)> spfunc,
-  const string& funcname
-) : order(G.order()), result(new Weight*[order + 1]) {
-  for (Vertex u = 1; u <= order; u++) {
-    result[u] = new Weight[order + 1];
-  }
-  Weight* shortest_path_tree = new Weight[order + 1];
-  for (auto& u : G) {
-    spfunc(G, u.vertex, shortest_path_tree);
-    for (auto& v : G) {
-      result[u.vertex][v.vertex] = shortest_path_tree[v.vertex];
-    }
-  }
-  delete[] shortest_path_tree;
-}
-
-AllPairsShortestPaths::~AllPairsShortestPaths() {
-  for (Vertex u = 1; u <= order; u++) {
-    delete[] result[u];
-  }
-  delete[] result;
-}
-
-bool AllPairsShortestPaths::operator==(
-  const AllPairsShortestPaths& other
-) const {
-  if (order != other.order) {
-    return false;
-  }
-  for (Vertex source = 1; source <= order; source++) {
-    for (Vertex target = 1; target <= order; target++) {
-      if (result[source][target] != other.result[source][target]) {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
-bool AllPairsShortestPaths::operator!=(
-  const AllPairsShortestPaths& other
-) const {
-  if (order != other.order) {
-    return true;
-  }
-  for (Vertex source = 1; source <= order; source++) {
-    for (Vertex target = 1; target <= order; target++) {
-      if (result[source][target] != other.result[source][target]) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-void AllPairsShortestPaths::print(FILE* fp) const {
-  fprintf(fp, "%s:\n", funcname.c_str());
-  for (Vertex source = 1; source <= order; source++) {
-    for (Vertex target = 1; target <= order; target++) {
-      Weight w = result[source][target];
-      if (w == INFINITE) {
-        fprintf(fp, "  inf ");
-      }
-      else {
-        fprintf(fp, "%5d ", w);
-      }
-    }
-    fprintf(fp, "\n");
   }
 }
 
@@ -295,7 +148,7 @@ void AllPairsShortestPaths::print(FILE* fp) const {
 // helper functions
 // =============================================================================
 
-void scanUndirectedGraph(Graph& G, FILE* fp) {
+void scanUndirectedGraph(Graph<int, 0x7fffffff>& G, FILE* fp) {
   int N, M;
   fscanf(fp, "%d %d", &N, &M);
   G.order(N);
@@ -307,7 +160,7 @@ void scanUndirectedGraph(Graph& G, FILE* fp) {
   }
 }
 
-void scanDirectedGraph(Graph& G, FILE* fp) {
+void scanDirectedGraph(Graph<int, 0x7fffffff>& G, FILE* fp) {
   int N, M;
   fscanf(fp, "%d %d", &N, &M);
   G.order(N);
@@ -318,7 +171,7 @@ void scanDirectedGraph(Graph& G, FILE* fp) {
   }
 }
 
-void printDirectedGraph(const Graph& G, FILE* fp) {
+void printDirectedGraph(const Graph<int, 0x7fffffff>& G, FILE* fp) {
   int M = 0;
   for (auto& v : G) {
     M += v.degree();
@@ -331,13 +184,13 @@ void printDirectedGraph(const Graph& G, FILE* fp) {
   }
 }
 
-void generateGraph(Graph& G, int N, Weight maxWeight) {
+void generateGraph(Graph<int, 0x7fffffff>& G, int N, int max_weight) {
   G.order(N);
-  for (Vertex u = 1; u < N; u++) {
-    for (Vertex v = u + 1; v <= N; v++) {
+  for (int u = 1; u < N; u++) {
+    for (int v = u + 1; v <= N; v++) {
       int tmp = rand()%2;
       if (tmp) {
-        Weight w = rand()%maxWeight + 1;
+        int w = rand()%max_weight + 1;
         G[u].edge(v, w);
         G[v].edge(u, w);
       }

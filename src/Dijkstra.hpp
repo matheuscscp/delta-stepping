@@ -12,9 +12,8 @@
 
 #include "Graph.hpp"
 
-inline void dijkstra(
-  const graph::Graph& G, graph::Vertex source, graph::Weight* dist
-) {
+template <typename Weight, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
+void dijkstra(const graph::Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) {
   using namespace graph;
   
   Size N = G.order();
@@ -22,11 +21,11 @@ inline void dijkstra(
     dist[v] = INFINITE;
   }
   dist[source] = 0;
-  std::priority_queue<Edge> Q;
-  Q.push(Edge(source, 0));
+  std::priority_queue<Edge<Weight, INFINITE, Vertex, nullvertex>> Q;
+  Q.push(Edge<Weight, INFINITE, Vertex, nullvertex>(source, 0));
   
   for (Vertex i = 0; !Q.empty() && i < N; i++) {
-    Edge edge = Q.top();
+    Edge<Weight, INFINITE, Vertex, nullvertex> edge = Q.top();
     Q.pop();
     
     if (edge.weight > dist[edge.vertex]) {
@@ -39,7 +38,7 @@ inline void dijkstra(
       Weight alt = edge.weight + v.weight;
       if (alt < dist[v.vertex]) {
         dist[v.vertex] = alt;
-        Q.push(Edge(v.vertex, alt));
+        Q.push(Edge<Weight, INFINITE, Vertex, nullvertex>(v.vertex, alt));
       }
     }
   }
