@@ -152,7 +152,7 @@ class ArrayGraph : public Graph {
       return Graph::Iterator(new Iterator(data + order_));
     }
     Neighbourhood& operator[](Vertex v) const {
-      return *(data + (v - 1));
+      return data[v - 1];
     }
     Size order() const {
       return order_;
@@ -174,6 +174,60 @@ template <> inline void ArrayGraph<ArrayNeighbourhood>::order(Size new_order) {
   for (Size i = 0; i < order_; i++) {
     data[i].vertex = i + 1;
     data[i].resize(order_);
+  }
+}
+
+template <class NeighbourhoodType>
+class MapGraph : public Graph {
+  public:
+    class Iterator : public Graph::Iterator {
+      private:
+        typename std::map<Vertex, NeighbourhoodType>::const_iterator mapit;
+      public:
+        Iterator(typename std::map<Vertex, NeighbourhoodType>::const_iterator mapit) :
+        Graph::Iterator(nullptr), mapit(mapit)
+        {
+          
+        }
+        bool operator!=(const Graph::Iterator& other) const {
+          return mapit != ((Iterator&)other).mapit;
+        }
+        Neighbourhood& operator*() {
+          return (Neighbourhood&)mapit->second;
+        }
+        Graph::Iterator& operator++() {
+          mapit++;
+          return *this;
+        }
+    };
+  private:
+    std::map<Vertex, NeighbourhoodType> data;
+  public:
+    Graph::Iterator begin() const {
+      return Graph::Iterator(new Iterator(data.begin()));
+    }
+    Graph::Iterator end() const {
+      return Graph::Iterator(new Iterator(data.end()));
+    }
+    Neighbourhood& operator[](Vertex v) const {
+      return (Neighbourhood&)data.at(v);
+    }
+    Size order() const {
+      return data.size();
+    }
+    void order(Size new_order) {
+      data.clear();
+      for (Vertex u = 1; u <= new_order; u++) {
+        data[u].vertex = u;
+      }
+    }
+};
+
+template <> inline void MapGraph<ArrayNeighbourhood>::order(Size new_order) {
+  data.clear();
+  for (Vertex u = 1; u <= new_order; u++) {
+    data[u].vertex = u;
+    data[u].resize(new_order);
   }
 }
 

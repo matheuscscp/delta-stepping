@@ -194,8 +194,7 @@ Neighbourhood::Iterator MapNeighbourhood::end() const {
 }
 
 Edge MapNeighbourhood::operator[](Vertex v) const {
-  auto it = data.find(v);
-  return it->second;
+  return data.at(v);
 }
 
 Size MapNeighbourhood::degree() const {
