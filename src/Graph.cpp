@@ -15,6 +15,10 @@ Edge::Edge(Vertex vertex, Weight weight) : vertex(vertex), weight(weight) {
   
 }
 
+bool Edge::operator<(const Edge& other) const {
+  return weight > other.weight;
+}
+
 Neighbourhood::Iterator::Iterator(Iterator* it, Iterator* itend) :
 it(it), itend(itend)
 {

@@ -23,6 +23,7 @@ class Edge {
     Vertex vertex;
     Weight weight;
     Edge(Vertex vertex = 0, Weight weight = INFINITE);
+    bool operator<(const Edge& other) const;
 };
 
 class Neighbourhood {
