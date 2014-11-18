@@ -8,10 +8,10 @@
 #ifndef GRAPH_HPP_
 #define GRAPH_HPP_
 
-#include <cstdio>
+#include <memory>
 #include <map>
 #include <functional>
-#include <memory>
+#include <cstdio>
 
 typedef int Size;
 typedef int Vertex;
@@ -22,7 +22,7 @@ class Edge {
   public:
     Vertex vertex;
     Weight weight;
-    Edge(Vertex vertex = 1, Weight weight = INFINITE);
+    Edge(Vertex vertex = 0, Weight weight = INFINITE);
 };
 
 class Neighbourhood {
@@ -68,10 +68,6 @@ class Graph {
 };
 
 class ArrayNeighbourhood : public Neighbourhood {
-  private:
-    Size size_;
-    Edge* data;
-    Size degree_;
   public:
     class Iterator : public Neighbourhood::Iterator {
       private:
@@ -82,6 +78,11 @@ class ArrayNeighbourhood : public Neighbourhood {
         Edge operator*();
         Neighbourhood::Iterator& operator++();
     };
+  private:
+    Size size_;
+    Edge* data;
+    Size degree_;
+  public:
     ArrayNeighbourhood(Size size = 0);
     ~ArrayNeighbourhood();
     Neighbourhood::Iterator begin() const;
@@ -92,11 +93,29 @@ class ArrayNeighbourhood : public Neighbourhood {
     void edge(Vertex v, Weight w);
 };
 
+class MapNeighbourhood : public Neighbourhood {
+  public:
+    class Iterator : public Neighbourhood::Iterator {
+      private:
+        std::map<Vertex, Edge>::const_iterator mapit;
+      public:
+        Iterator(std::map<Vertex, Edge>::const_iterator mapit);
+        bool operator!=(const Neighbourhood::Iterator& other) const;
+        Edge operator*();
+        Neighbourhood::Iterator& operator++();
+    };
+  private:
+    std::map<Vertex, Edge> data;
+  public:
+    Neighbourhood::Iterator begin() const;
+    Neighbourhood::Iterator end() const;
+    Edge operator[](Vertex v) const;
+    Size degree() const;
+    void edge(Vertex v, Weight w);
+};
+
 template <class NeighbourhoodType>
 class ArrayGraph : public Graph {
-  private:
-    Size order_;
-    NeighbourhoodType* data;
   public:
     class Iterator : public Graph::Iterator {
       private:
@@ -116,6 +135,10 @@ class ArrayGraph : public Graph {
           return *this;
         }
     };
+  private:
+    Size order_;
+    NeighbourhoodType* data;
+  public:
     ArrayGraph(Size order = 0) : order_(order), data(new NeighbourhoodType[order]) {
       for (Size i = 0; i < order; i++) {
         data[i].vertex = i + 1;

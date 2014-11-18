@@ -146,6 +146,62 @@ void ArrayNeighbourhood::edge(Vertex v, Weight w) {
   data[v - 1].weight = w;
 }
 
+MapNeighbourhood::Iterator::Iterator(map<Vertex, Edge>::const_iterator mapit) :
+Neighbourhood::Iterator(nullptr), mapit(mapit)
+{
+  
+}
+
+bool MapNeighbourhood::Iterator::operator!=(
+  const Neighbourhood::Iterator& other
+) const {
+  return mapit != ((Iterator&)other).mapit;
+}
+
+Edge MapNeighbourhood::Iterator::operator*() {
+  return mapit->second;
+}
+
+Neighbourhood::Iterator& MapNeighbourhood::Iterator::operator++() {
+  mapit++;
+  return *this;
+}
+
+Neighbourhood::Iterator MapNeighbourhood::begin() const {
+  return Neighbourhood::Iterator(new Iterator(data.begin()));
+}
+
+Neighbourhood::Iterator MapNeighbourhood::end() const {
+  return Neighbourhood::Iterator(new Iterator(data.end()));
+}
+
+Edge MapNeighbourhood::operator[](Vertex v) const {
+  auto it = data.find(v);
+  if (it == data.end()) {
+    return Edge();
+  }
+  return it->second;
+}
+
+Size MapNeighbourhood::degree() const {
+  return data.size();
+}
+
+void MapNeighbourhood::edge(Vertex v, Weight w) {
+  if (w == INFINITE) {
+    data.erase(v);
+  }
+  else {
+    Edge& data_v = data[v];
+    data_v.vertex = v;
+    data_v.weight = w;
+  }
+}
+
+// =============================================================================
+// helper functions
+// =============================================================================
+
 void scanUndirectedGraph(Graph& G, FILE* fp) {
   int N, M;
   fscanf(fp, "%d %d", &N, &M);
