@@ -10,6 +10,11 @@
 
 namespace graph {
 
+template <class VertexType, typename Weight>
+GenericEdge<VertexType, Weight>::GenericEdge(VertexType source, VertexType target, Weight weight) : source(source), target(target), weight(weight) {
+  
+}
+
 template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex>
 Edge<Weight, INFINITE, Vertex, nullvertex>::Edge(Vertex vertex, Weight weight) : vertex(vertex), weight(weight) {
   
@@ -92,6 +97,22 @@ typename Graph<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator& Graph<Weig
 template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
 Graph<Weight, INFINITE, Vertex, nullvertex, Size>::~Graph() {
   
+}
+
+template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+template <class VertexType>
+void Graph<Weight, INFINITE, Vertex, nullvertex, Size>::build(Graph& G, const std::set<VertexType>& vertices, const std::set<GenericEdge<VertexType, Weight>>& edges) {
+  std::map<VertexType, Vertex> mapping;
+  Vertex u = 1;
+  G.order(vertices.size());
+  for (auto& vertex : vertices) {
+    mapping[vertex] = u;
+    G[u].vertex = u;
+    u++;
+  }
+  for (auto& edge : edges) {
+    G[mapping[edge.source]].edge(mapping[edge.target], edge.weight);
+  }
 }
 
 template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>

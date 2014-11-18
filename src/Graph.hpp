@@ -9,18 +9,19 @@
 #define GRAPH_HPP_
 
 #include <memory>
+#include <set>
 #include <map>
 #include <cstdio>
 
 namespace graph {
 
-/*FIXME
-template <typename VertexType, typename WeightType>
+template <class VertexType, typename Weight>
 class GenericEdge {
   public:
-    
+    VertexType source, target;
+    Weight weight;
+    GenericEdge(VertexType source, VertexType target, Weight weight);
 };
-*/
 
 template <typename Weight, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0>
 class Edge {
@@ -74,8 +75,8 @@ class Graph {
     virtual Size order() const = 0;
     virtual void order(Size new_order) = 0;
     
-    //FIXME template <typename VertexType, typename WeightType>
-    //FIXME static std::map<> build(Graph& G, const std::set<GenericEdge<VertexType, WeightType>>& edges);
+    template <class VertexType>
+    static void build(Graph& G, const std::set<VertexType>& vertices, const std::set<GenericEdge<VertexType, Weight>>& edges);
 };
 
 class ArrayNeighbourhood : public Neighbourhood<int, 0x7fffffff> {
