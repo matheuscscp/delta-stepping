@@ -218,6 +218,79 @@ void MapNeighbourhood::edge(Vertex v, Weight w) {
   }
 }
 
+AllPairsShortestPaths::AllPairsShortestPaths(
+  const Graph& G,
+  function<void(const Graph&, Vertex, Weight*)> spfunc,
+  const string& funcname
+) : order(G.order()), result(new Weight*[order + 1]) {
+  for (Vertex u = 1; u <= order; u++) {
+    result[u] = new Weight[order + 1];
+  }
+  Weight* shortest_path_tree = new Weight[order + 1];
+  for (auto& u : G) {
+    spfunc(G, u.vertex, shortest_path_tree);
+    for (auto& v : G) {
+      result[u.vertex][v.vertex] = shortest_path_tree[v.vertex];
+    }
+  }
+  delete[] shortest_path_tree;
+}
+
+AllPairsShortestPaths::~AllPairsShortestPaths() {
+  for (Vertex u = 1; u <= order; u++) {
+    delete[] result[u];
+  }
+  delete[] result;
+}
+
+bool AllPairsShortestPaths::operator==(
+  const AllPairsShortestPaths& other
+) const {
+  if (order != other.order) {
+    return false;
+  }
+  for (Vertex source = 1; source <= order; source++) {
+    for (Vertex target = 1; target <= order; target++) {
+      if (result[source][target] != other.result[source][target]) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+bool AllPairsShortestPaths::operator!=(
+  const AllPairsShortestPaths& other
+) const {
+  if (order != other.order) {
+    return true;
+  }
+  for (Vertex source = 1; source <= order; source++) {
+    for (Vertex target = 1; target <= order; target++) {
+      if (result[source][target] != other.result[source][target]) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+void AllPairsShortestPaths::print(FILE* fp) const {
+  fprintf(fp, "%s:\n", funcname.c_str());
+  for (Vertex source = 1; source <= order; source++) {
+    for (Vertex target = 1; target <= order; target++) {
+      Weight w = result[source][target];
+      if (w == INFINITE) {
+        fprintf(fp, "  inf ");
+      }
+      else {
+        fprintf(fp, "%5d ", w);
+      }
+    }
+    fprintf(fp, "\n");
+  }
+}
+
 // =============================================================================
 // helper functions
 // =============================================================================

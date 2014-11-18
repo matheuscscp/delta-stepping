@@ -10,7 +10,6 @@
 
 #include <memory>
 #include <map>
-#include <functional>
 #include <cstdio>
 
 namespace graph {
@@ -234,81 +233,21 @@ template <> inline void MapGraph<ArrayNeighbourhood>::order(Size new_order) {
   }
 }
 
-template <int maxN>
 class AllPairsShortestPaths {
   private:
-    struct Data {
-      Weight data[maxN][maxN];
-    };
-    
-    int N;
-    Data* res;
+    int order;
+    Weight** result;
+    std::string funcname;
   public:
     AllPairsShortestPaths(
       const Graph& G,
-      std::function<void(const Graph&, Vertex, Weight*)> spfunc
-    ) : N(G.order()), res(new Data) {
-      Weight* shortest_path_tree = new Weight[G.order() + 1];
-      for (auto& u : G) {
-        spfunc(G, u.vertex, shortest_path_tree);
-        for (auto& v : G) {
-          res->data[u.vertex][v.vertex] = shortest_path_tree[v.vertex];
-        }
-      }
-      delete[] shortest_path_tree;
-    }
-    
-    ~AllPairsShortestPaths() {
-      delete res;
-    }
-    
-    bool operator==(const AllPairsShortestPaths& other) {
-      if (N != other.N) {
-        return false;
-      }
-      
-      for (Vertex source = 1; source <= N; source++) {
-        for (Vertex target = 1; target <= N; target++) {
-          if (res->data[source][target] != other.res->data[source][target]) {
-            return false;
-          }
-        }
-      }
-      
-      return true;
-    }
-    
-    bool operator!=(const AllPairsShortestPaths& other) {
-      if (N != other.N) {
-        return true;
-      }
-      
-      for (Vertex source = 1; source <= N; source++) {
-        for (Vertex target = 1; target <= N; target++) {
-          if (res->data[source][target] != other.res->data[source][target]) {
-            return true;
-          }
-        }
-      }
-      
-      return false;
-    }
-    
-    void print(FILE* fp, const char* funcname) {
-      fprintf(fp, "%s:\n", funcname);
-      for (Vertex source = 1; source <= N; source++) {
-        for (Vertex target = 1; target <= N; target++) {
-          Weight w = res->data[source][target];
-          if (w == INFINITE) {
-            fprintf(fp, "  inf ");
-          }
-          else {
-            fprintf(fp, "%5d ", w);
-          }
-        }
-        fprintf(fp, "\n");
-      }
-    }
+      std::function<void(const Graph&, Vertex, Weight*)> spfunc,
+      const std::string& funcname
+    );
+    ~AllPairsShortestPaths();
+    bool operator==(const AllPairsShortestPaths& other) const;
+    bool operator!=(const AllPairsShortestPaths& other) const;
+    void print(FILE* fp) const;
 };
 
 void scanUndirectedGraph(Graph& G, FILE* fp);

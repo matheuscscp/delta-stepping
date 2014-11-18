@@ -14,30 +14,29 @@
 using namespace std;
 using namespace graph;
 
-typedef AllPairsShortestPaths<25> APSP;
-static int maxN = 20;
-static Weight maxWeight = 50;
-static int maxGs = 1000;
+static Size max_order = 20;
+static Weight max_weight = 50;
+static Size graphs = 1000;
 
 static inline bool generateAndCompare() {
   ArrayGraph<MapNeighbourhood> G;
   
   // [2, maxN] vertices, weights in [1, maxWeight]
-  generateGraph(G, rand()%(maxN - 1) + 2, maxWeight);
+  generateGraph(G, rand()%(max_order - 1) + 2, max_weight);
   
-  APSP dijkstraResult(G, &dijkstra);
-  APSP deltaResult(G, &serial_deltaStepping);
+  AllPairsShortestPaths res1(G, &dijkstra, "dijkstra");
+  AllPairsShortestPaths res2(G, &serial_deltaStepping, "serial delta stepping");
   
-  return dijkstraResult == deltaResult;
+  return res1 == res2;
 }
 
 int main(int argc, char** argv) {
   
   srand(time(nullptr));
   
-  int i = 0;
-  for (; i < maxGs && generateAndCompare(); i++);
-  if (i < maxGs) {
+  Size i = 0;
+  for (; i < graphs && generateAndCompare(); i++);
+  if (i < graphs) {
     printf("erro! nao ta funfando\n");
   }
   
