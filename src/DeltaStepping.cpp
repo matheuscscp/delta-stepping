@@ -16,7 +16,7 @@
 using namespace std;
 using namespace graph;
 
-struct DeltaStepping {
+struct SerialDeltaStepping {
   // in
   const Graph& G;
   Vertex source;
@@ -28,7 +28,7 @@ struct DeltaStepping {
   // out
   Weight* tent; // tentative distance. equals distance after the algorithm
   
-  DeltaStepping(const Graph& G, Vertex source, Weight* tent) :
+  SerialDeltaStepping(const Graph& G, Vertex source, Weight* tent) :
   G(G), source(source), tent(tent)
   {
     algorithm();
@@ -100,5 +100,9 @@ struct DeltaStepping {
 };
 
 void serial_deltaStepping(const Graph& G, Vertex source, Weight* dist) {
-  DeltaStepping(G, source, dist);
+  SerialDeltaStepping(G, source, dist);
+}
+
+void parallel_deltaStepping(const Graph& G, Vertex source, Weight* dist) {
+  //TODO
 }

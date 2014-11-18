@@ -14,4 +14,8 @@ void serial_deltaStepping(
   const graph::Graph& G, graph::Vertex source, graph::Weight* dist
 );
 
+void parallel_deltaStepping(
+  const graph::Graph& G, graph::Vertex source, graph::Weight* dist
+);
+
 #endif /* DELTASTEPPING_HPP_ */

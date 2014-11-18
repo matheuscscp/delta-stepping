@@ -25,9 +25,10 @@ static inline bool generateAndCompare() {
   generateGraph(G, rand()%(max_order - 1) + 2, max_weight);
   
   AllPairsShortestPaths res1(G, &dijkstra, "dijkstra");
-  AllPairsShortestPaths res2(G, &serial_deltaStepping, "serial delta stepping");
+  AllPairsShortestPaths res2(G, &serial_deltaStepping, "serial ds");
+  AllPairsShortestPaths res3(G, &parallel_deltaStepping, "parallel ds");
   
-  return res1 == res2;
+  return (res1 == res2) && (res2 == res3);
 }
 
 int main(int argc, char** argv) {
@@ -37,7 +38,7 @@ int main(int argc, char** argv) {
   Size i = 0;
   for (; i < graphs && generateAndCompare(); i++);
   if (i < graphs) {
-    printf("erro! nao ta funfando\n");
+    printf("erro! algum algoritmo nao esta correto\n");
   }
   
   return 0;
