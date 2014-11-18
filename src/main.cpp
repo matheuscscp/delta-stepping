@@ -18,19 +18,6 @@ static int maxN = 20;
 static Weight maxWeight = 50;
 static int maxGs = 1000;
 
-static inline bool scanAndCompare() {
-  ArrayGraph<ArrayNeighbourhood> G;
-  
-  scanUndirectedGraph(G, stdin);
-  
-  APSP dijkstraResult(G, &dijkstra);
-  dijkstraResult.print(stdout, "dijkstra");
-  APSP deltaResult(G, &serial_deltaStepping);
-  deltaResult.print(stdout, "delta stepping");
-  
-  return dijkstraResult == deltaResult;
-}
-
 static inline bool generateAndCompare() {
   ArrayGraph<ArrayNeighbourhood> G;
   

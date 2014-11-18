@@ -197,9 +197,6 @@ Neighbourhood::Iterator MapNeighbourhood::end() const {
 
 Edge MapNeighbourhood::operator[](Vertex v) const {
   auto it = data.find(v);
-  if (it == data.end()) {
-    return Edge();
-  }
   return it->second;
 }
 

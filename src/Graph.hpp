@@ -139,10 +139,8 @@ class ArrayGraph : public Graph {
     Size order_;
     NeighbourhoodType* data;
   public:
-    ArrayGraph(Size order = 0) : order_(order), data(new NeighbourhoodType[order]) {
-      for (Size i = 0; i < order; i++) {
-        data[i].vertex = i + 1;
-      }
+    ArrayGraph() : order_(0), data(new NeighbourhoodType[0]) {
+      
     }
     ~ArrayGraph() {
       delete[] data;
