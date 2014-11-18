@@ -24,9 +24,9 @@ inline void dijkstra(const Graph& G, Vertex source, Weight* dist) {
     }
   };
   
-  Vertex N = int(G.size());
+  Size N = G.order();
   for (Vertex v = 1; v <= N; v++) {
-    dist[v] = INF;
+    dist[v] = INFINITE;
   }
   dist[source] = 0;
   std::priority_queue<Path> Q;
@@ -41,12 +41,15 @@ inline void dijkstra(const Graph& G, Vertex source, Weight* dist) {
       continue;
     }
     
-    const std::map<Vertex, Weight>& u = G.at(edge.v);
-    for (auto& kv : u) {
-      Weight alt = edge.dist + kv.second;
-      if (alt < dist[kv.first]) {
-        dist[kv.first] = alt;
-        Q.push(Path(kv.first, alt));
+    auto& u = G[edge.v];
+    for (auto v : u) {
+      if (v.weight == INFINITE) {
+        continue;
+      }
+      Weight alt = edge.dist + v.weight;
+      if (alt < dist[v.vertex]) {
+        dist[v.vertex] = alt;
+        Q.push(Path(v.vertex, alt));
       }
     }
   }

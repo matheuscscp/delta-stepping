@@ -19,7 +19,9 @@ static Weight maxWeight = 50;
 static int maxGs = 1000;
 
 static inline bool scanAndCompare() {
-  Graph G = scanUndirectedGraph(stdin);
+  ArrayGraph<ArrayNeighbourhood> G;
+  
+  scanUndirectedGraph(G, stdin);
   
   APSP dijkstraResult(G, &dijkstra);
   dijkstraResult.print(stdout, "dijkstra");
@@ -30,8 +32,10 @@ static inline bool scanAndCompare() {
 }
 
 static inline bool generateAndCompare() {
+  ArrayGraph<ArrayNeighbourhood> G;
+  
   // [2, maxN] vertices, weights in [1, maxWeight]
-  Graph G = generateGraph(rand()%(maxN - 1) + 2, maxWeight);
+  generateGraph(G, rand()%(maxN - 1) + 2, maxWeight);
   
   APSP dijkstraResult(G, &dijkstra);
   APSP deltaResult(G, &serial_deltaStepping);

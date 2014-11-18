@@ -35,18 +35,20 @@ struct DeltaStepping {
   
   void algorithm() {
     for (auto& v : G) {
-      list<Vertex>& h = heavy[v.first];
-      list<Vertex>& l = light[v.first];
-      auto& v_second = v.second;
-      for (auto& w : v_second) {
-        if (w.second > DELTA) {
-          h.push_back(w.first);
+      list<Vertex>& h = heavy[v.vertex];
+      list<Vertex>& l = light[v.vertex];
+      for (auto w : v) {
+        if (w.weight == INFINITE) {
+          continue;
+        }
+        if (w.weight > DELTA) {
+          h.push_back(w.vertex);
         }
         else {
-          l.push_back(w.first);
+          l.push_back(w.vertex);
         }
       }
-      tent[v.first] = INF;
+      tent[v.vertex] = INFINITE;
     }
     relax(source, 0);
     size_t i;
@@ -57,10 +59,14 @@ struct DeltaStepping {
         auto& B_i = B[i];
         for (auto& v : B_i) {
           Weight tent_v = tent[v];
-          auto& G_v = G.at(v);
+          auto& G_v = G[v];
           auto& light_v = light[v];
           for (auto& w : light_v) {
-            Req.emplace_back(w, tent_v + G_v.at(w));
+            auto G_v_w = G_v[w];
+            if (G_v_w.weight == INFINITE) {
+              continue;
+            }
+            Req.emplace_back(w, tent_v + G_v_w.weight);
           }
           S.push_back(v);
         }
@@ -72,10 +78,13 @@ struct DeltaStepping {
       list<pair<Vertex, Weight>> Req;
       for (auto& v : S) {
         Weight tent_v = tent[v];
-        auto& G_v = G.at(v);
         auto& heavy_v = heavy[v];
         for (auto& w : heavy_v) {
-          Req.emplace_back(w, tent_v + G_v.at(w));
+          auto G_v_w = G[v][w];
+          if (G_v_w.weight == INFINITE) {
+            continue;
+          }
+          Req.emplace_back(w, tent_v + G_v_w.weight);
         }
       }
       for (auto& v_x : Req) {

@@ -11,90 +11,190 @@
 
 using namespace std;
 
-Graph scanUndirectedGraph(FILE* fp) {
-  Graph G;
+Edge::Edge(Vertex vertex, Weight weight) : vertex(vertex), weight(weight) {
   
+}
+
+Neighbourhood::Iterator::Iterator(Iterator* it) : it(it) {
+  
+}
+
+Neighbourhood::Iterator::~Iterator() {
+  
+}
+
+bool Neighbourhood::Iterator::operator!=(const Iterator& other) const {
+  return it->operator!=(*other.it);
+}
+
+Edge Neighbourhood::Iterator::operator*() {
+  return it->operator*();
+}
+
+Neighbourhood::Iterator& Neighbourhood::Iterator::operator++() {
+  it->operator++();
+  return *this;
+}
+
+Neighbourhood::Neighbourhood(Vertex vertex) : vertex(vertex) {
+  
+}
+
+Neighbourhood::~Neighbourhood() {
+  
+}
+
+Graph::Iterator::Iterator(Iterator* it) : it(it) {
+  
+}
+
+Graph::Iterator::~Iterator() {
+  
+}
+
+bool Graph::Iterator::operator!=(const Iterator& other) const {
+  return it->operator!=(*other.it);
+}
+
+Neighbourhood& Graph::Iterator::operator*() {
+  return it->operator*();
+}
+
+Graph::Iterator& Graph::Iterator::operator++() {
+  it->operator++();
+  return *this;
+}
+
+Graph::~Graph() {
+  
+}
+
+ArrayNeighbourhood::Iterator::Iterator(Edge* ptr) :
+Neighbourhood::Iterator(nullptr), ptr(ptr)
+{
+  
+}
+
+bool ArrayNeighbourhood::Iterator::operator!=(
+  const Neighbourhood::Iterator& other
+) const {
+  return ptr != ((ArrayNeighbourhood::Iterator&)other).ptr;
+}
+
+Edge ArrayNeighbourhood::Iterator::operator*() {
+  return *ptr;
+}
+
+Neighbourhood::Iterator& ArrayNeighbourhood::Iterator::operator++() {
+  ptr++;
+  return *this;
+}
+
+ArrayNeighbourhood::ArrayNeighbourhood(Size size) :
+size_(size), data(new Edge[size]), degree_(0)
+{
+  for (Size i = 0; i < size; i++) {
+    data[i].vertex = i + 1;
+  }
+}
+
+ArrayNeighbourhood::~ArrayNeighbourhood() {
+  delete[] data;
+}
+
+Neighbourhood::Iterator ArrayNeighbourhood::begin() const {
+  return Neighbourhood::Iterator(new Iterator(data));
+}
+
+Neighbourhood::Iterator ArrayNeighbourhood::end() const {
+  return Neighbourhood::Iterator(new Iterator(data + size_));
+}
+
+Edge ArrayNeighbourhood::operator[](Vertex v) const {
+  return data[v - 1];
+}
+
+Size ArrayNeighbourhood::degree() const {
+  return degree_;
+}
+
+void ArrayNeighbourhood::resize(Size new_size) {
+  Edge* tmp = new Edge[new_size];
+  degree_ = 0;
+  for (Size i = 0; i < new_size && i < size_; i++) {
+    Weight w = data[i].weight;
+    tmp[i].weight = w;
+    if (w < INFINITE) {
+      degree_++;
+    }
+  }
+  size_ = new_size;
+  delete[] data;
+  data = tmp;
+  for (Size i = 0; i < size_; i++) {
+    data[i].vertex = i + 1;
+  }
+}
+
+void ArrayNeighbourhood::edge(Vertex v, Weight w) {
+  if (data[v - 1].weight < INFINITE && w == INFINITE) {
+    degree_--;
+  }
+  else if (data[v - 1].weight == INFINITE && w < INFINITE) {
+    degree_++;
+  }
+  data[v - 1].weight = w;
+}
+
+void scanUndirectedGraph(Graph& G, FILE* fp) {
   int N, M;
   fscanf(fp, "%d %d", &N, &M);
-  
-  // creating vertices
-  for (Vertex v = 1; v <= N; v++) {
-    G[v];
-  }
-  
-  // reading edges
+  G.order(N);
   for (int m = 0; m < M; m++) {
-    Vertex u, v;
-    Weight w;
+    int u, v, w;
     fscanf(fp, "%d %d %d", &u, &v, &w);
-    G[u][v] = w;
-    G[v][u] = w;
+    G[u].edge(v, w);
+    G[v].edge(u, w);
   }
-  
-  return G;
 }
 
-Graph scanDirectedGraph(FILE* fp) {
-  Graph G;
-  
+void scanDirectedGraph(Graph& G, FILE* fp) {
   int N, M;
   fscanf(fp, "%d %d", &N, &M);
-  
-  // creating vertices
-  for (Vertex v = 1; v <= N; v++) {
-    G[v];
-  }
-  
-  // reading edges
+  G.order(N);
   for (int m = 0; m < M; m++) {
-    Vertex source, target;
-    Weight w;
+    int source, target, w;
     fscanf(fp, "%d %d %d", &source, &target, &w);
-    G[source][target] = w;
+    G[source].edge(target, w);
   }
-  
-  return G;
 }
 
-void printDirectedGraph(FILE* fp, const Graph& G) {
+void printDirectedGraph(const Graph& G, FILE* fp) {
   int M = 0;
-  for (auto& kv : G) {
-    M += int(kv.second.size());
+  for (auto& v : G) {
+    M += v.degree();
   }
-  fprintf(fp, "%d %d\n", int(G.size()), M);
-  for (auto& kv : G) {
-    for (auto& kv2 : kv.second) {
-      fprintf(fp, "%d %d %d\n", kv.first, kv2.first, kv2.second);
+  fprintf(fp, "%d %d\n", G.order(), M);
+  for (auto& source : G) {
+    for (auto target : source) {
+      if (target.weight == INFINITE) {
+        continue;
+      }
+      fprintf(fp, "%d %d %d\n", source.vertex, target.vertex, target.weight);
     }
   }
 }
 
-Graph generateGraph(int N, Weight maxWeight) {
-  Graph G;
-  
-  // creating vertices
-  for (Vertex v = 1; v <= N; v++) {
-    G[v];
-  }
-  
-  // creating edges
-  int maxM = (N*(N - 1))/2;
-  int M = rand()%(maxM + 1);
-  for (int m = 0; m < M; m++) {
-    Vertex u = rand()%N + 1, v = u + rand()%(N - 1) + 1;
-    if (v > N) {
-      v -= N;
-    }
-    map<Vertex, Weight>& G_u = G[u];
-    if (G_u.find(v) != G_u.end()) {
-      m--;
-    }
-    else {
-      Weight w = rand()%maxWeight + 1;
-      G_u[v] = w;
-      G[v][u] = w;
+void generateGraph(Graph& G, int N, Weight maxWeight) {
+  G.order(N);
+  for (Vertex u = 1; u < N; u++) {
+    for (Vertex v = u + 1; v <= N; v++) {
+      int tmp = rand()%2;
+      if (tmp) {
+        Weight w = rand()%maxWeight + 1;
+        G[u].edge(v, w);
+        G[v].edge(u, w);
+      }
     }
   }
-  
-  return G;
 }
