@@ -43,9 +43,6 @@ inline void dijkstra(const Graph& G, Vertex source, Weight* dist) {
     
     auto& u = G[edge.v];
     for (auto v : u) {
-      if (v.weight == INFINITE) {
-        continue;
-      }
       Weight alt = edge.dist + v.weight;
       if (alt < dist[v.vertex]) {
         dist[v.vertex] = alt;

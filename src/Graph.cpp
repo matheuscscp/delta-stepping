@@ -15,8 +15,18 @@ Edge::Edge(Vertex vertex, Weight weight) : vertex(vertex), weight(weight) {
   
 }
 
-Neighbourhood::Iterator::Iterator(Iterator* it) : it(it) {
-  
+Neighbourhood::Iterator::Iterator(Iterator* it, Iterator* itend) :
+it(it), itend(itend)
+{
+  if (it == nullptr) {
+    return;
+  }
+  while (
+    this->it->operator!=(*(this->itend)) &&
+    this->it->operator*().weight == INFINITE
+  ) {
+    this->it->operator++();
+  }
 }
 
 Neighbourhood::Iterator::~Iterator() {
@@ -32,7 +42,9 @@ Edge Neighbourhood::Iterator::operator*() {
 }
 
 Neighbourhood::Iterator& Neighbourhood::Iterator::operator++() {
-  it->operator++();
+  do {
+    it->operator++();
+  } while (it->operator!=(*itend) && it->operator*().weight == INFINITE);
   return *this;
 }
 
@@ -70,7 +82,7 @@ Graph::~Graph() {
 }
 
 ArrayNeighbourhood::Iterator::Iterator(Edge* ptr) :
-Neighbourhood::Iterator(nullptr), ptr(ptr)
+Neighbourhood::Iterator(nullptr, nullptr), ptr(ptr)
 {
   
 }
@@ -103,11 +115,15 @@ ArrayNeighbourhood::~ArrayNeighbourhood() {
 }
 
 Neighbourhood::Iterator ArrayNeighbourhood::begin() const {
-  return Neighbourhood::Iterator(new Iterator(data));
+  return Neighbourhood::Iterator(
+    new Iterator(data), new Iterator(data + size_)
+  );
 }
 
 Neighbourhood::Iterator ArrayNeighbourhood::end() const {
-  return Neighbourhood::Iterator(new Iterator(data + size_));
+  return Neighbourhood::Iterator(
+    new Iterator(data + size_), new Iterator(data + size_)
+  );
 }
 
 Edge ArrayNeighbourhood::operator[](Vertex v) const {
@@ -147,7 +163,7 @@ void ArrayNeighbourhood::edge(Vertex v, Weight w) {
 }
 
 MapNeighbourhood::Iterator::Iterator(map<Vertex, Edge>::const_iterator mapit) :
-Neighbourhood::Iterator(nullptr), mapit(mapit)
+Neighbourhood::Iterator(nullptr, nullptr), mapit(mapit)
 {
   
 }
@@ -168,11 +184,15 @@ Neighbourhood::Iterator& MapNeighbourhood::Iterator::operator++() {
 }
 
 Neighbourhood::Iterator MapNeighbourhood::begin() const {
-  return Neighbourhood::Iterator(new Iterator(data.begin()));
+  return Neighbourhood::Iterator(
+    new Iterator(data.begin()), new Iterator(data.end())
+  );
 }
 
 Neighbourhood::Iterator MapNeighbourhood::end() const {
-  return Neighbourhood::Iterator(new Iterator(data.end()));
+  return Neighbourhood::Iterator(
+    new Iterator(data.end()), new Iterator(data.end())
+  );
 }
 
 Edge MapNeighbourhood::operator[](Vertex v) const {
@@ -233,9 +253,6 @@ void printDirectedGraph(const Graph& G, FILE* fp) {
   fprintf(fp, "%d %d\n", G.order(), M);
   for (auto& source : G) {
     for (auto target : source) {
-      if (target.weight == INFINITE) {
-        continue;
-      }
       fprintf(fp, "%d %d %d\n", source.vertex, target.vertex, target.weight);
     }
   }

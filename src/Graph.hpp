@@ -29,9 +29,9 @@ class Neighbourhood {
   public:
     class Iterator : public std::iterator<std::forward_iterator_tag, Edge> {
       private:
-        std::shared_ptr<Iterator> it;
+        std::shared_ptr<Iterator> it, itend;
       public:
-        Iterator(Iterator* it);
+        Iterator(Iterator* it, Iterator* itend);
         virtual ~Iterator();
         virtual bool operator!=(const Iterator& other) const;
         virtual Edge operator*();

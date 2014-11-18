@@ -19,7 +19,7 @@ static Weight maxWeight = 50;
 static int maxGs = 1000;
 
 static inline bool scanAndCompare() {
-  ArrayGraph<MapNeighbourhood> G;
+  ArrayGraph<ArrayNeighbourhood> G;
   
   scanUndirectedGraph(G, stdin);
   
@@ -32,7 +32,7 @@ static inline bool scanAndCompare() {
 }
 
 static inline bool generateAndCompare() {
-  ArrayGraph<MapNeighbourhood> G;
+  ArrayGraph<ArrayNeighbourhood> G;
   
   // [2, maxN] vertices, weights in [1, maxWeight]
   generateGraph(G, rand()%(maxN - 1) + 2, maxWeight);
