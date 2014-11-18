@@ -169,8 +169,7 @@ class ArrayGraph : public Graph {
     }
 };
 
-template <>
-inline void ArrayGraph<ArrayNeighbourhood>::order(Size new_order) {
+template <> inline void ArrayGraph<ArrayNeighbourhood>::order(Size new_order) {
   order_ = new_order;
   delete[] data;
   data = new ArrayNeighbourhood[order_];
