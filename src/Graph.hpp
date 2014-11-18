@@ -83,7 +83,7 @@ class ArrayNeighbourhood : public Neighbourhood {
     Edge* data;
     Size degree_;
   public:
-    ArrayNeighbourhood(Size size = 0);
+    ArrayNeighbourhood();
     ~ArrayNeighbourhood();
     Neighbourhood::Iterator begin() const;
     Neighbourhood::Iterator end() const;

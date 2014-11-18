@@ -102,12 +102,10 @@ Neighbourhood::Iterator& ArrayNeighbourhood::Iterator::operator++() {
   return *this;
 }
 
-ArrayNeighbourhood::ArrayNeighbourhood(Size size) :
-size_(size), data(new Edge[size]), degree_(0)
+ArrayNeighbourhood::ArrayNeighbourhood() :
+size_(0), data(new Edge[0]), degree_(0)
 {
-  for (Size i = 0; i < size; i++) {
-    data[i].vertex = i + 1;
-  }
+  
 }
 
 ArrayNeighbourhood::~ArrayNeighbourhood() {

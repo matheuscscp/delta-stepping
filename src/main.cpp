@@ -19,7 +19,7 @@ static Weight maxWeight = 50;
 static int maxGs = 1000;
 
 static inline bool generateAndCompare() {
-  ArrayGraph<ArrayNeighbourhood> G;
+  ArrayGraph<MapNeighbourhood> G;
   
   // [2, maxN] vertices, weights in [1, maxWeight]
   generateGraph(G, rand()%(maxN - 1) + 2, maxWeight);
