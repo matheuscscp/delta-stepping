@@ -185,9 +185,9 @@ class MapGraph : public Graph {
       private:
         typename std::map<Vertex, NeighbourhoodType>::const_iterator mapit;
       public:
-        Iterator(typename std::map<Vertex, NeighbourhoodType>::const_iterator mapit) :
-        Graph::Iterator(nullptr), mapit(mapit)
-        {
+        Iterator(
+          typename std::map<Vertex, NeighbourhoodType>::const_iterator mapit
+        ) : Graph::Iterator(nullptr), mapit(mapit) {
           
         }
         bool operator!=(const Graph::Iterator& other) const {
