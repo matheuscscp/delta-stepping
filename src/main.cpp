@@ -11,12 +11,14 @@
 
 using namespace std;
 
-void correctness(int argc, char** argv);
+void correctness(int, char**);
+void test(int, char**);
 
 int main(int argc, char** argv) {
   
   map<string, void (*)(int, char**)> progs;
   progs["correctness"] = &correctness;
+  progs["test"] = &test;
   
   auto usage_mode = [argv, &progs]() {
     fprintf(stderr, "Usage mode: %s <program>\n", argv[0]);
