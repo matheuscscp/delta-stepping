@@ -39,14 +39,10 @@ void SerialDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::relax(cons
 }
 
 template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-void SerialDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::clear() {
+void SerialDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) {
   heavy.clear();
   light.clear();
   B.clear();
-}
-
-template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-void SerialDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) {
   tent = dist;
   for (auto& v : G) {
     std::list<Vertex>& h = heavy[v.vertex];
@@ -98,11 +94,6 @@ void SerialDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::run(const 
 template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
 std::string SerialDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::name() const {
   return "Serial Delta Stepping";
-}
-
-template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-void ParallelDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::clear() {
-  //TODO
 }
 
 template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>

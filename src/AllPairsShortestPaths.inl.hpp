@@ -20,7 +20,6 @@ AllPairsShortestPaths<Weight, INFINITE, Vertex, nullvertex, Size>::AllPairsShort
   }
   Weight* shortest_path_tree = new Weight[order + 1];
   for (auto& u : G) {
-    ((SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size>&)ssspfunc).clear();
     ((SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size>&)ssspfunc).run(G, u.vertex, shortest_path_tree);
     for (auto& v : G) {
       result[u.vertex][v.vertex] = shortest_path_tree[v.vertex];

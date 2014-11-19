@@ -39,7 +39,6 @@ class SerialDeltaStepping : public SSSPAlgorithm<Weight, INFINITE, Vertex, nullv
     Weight* tent; // tentative distance. equals distance after the algorithm
     void relax(const Vertex& v, Weight x);
   public:
-    void clear();
     void run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist);
     std::string name() const;
 };
@@ -47,7 +46,6 @@ class SerialDeltaStepping : public SSSPAlgorithm<Weight, INFINITE, Vertex, nullv
 template <typename Weight, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
 class ParallelDeltaStepping : public SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size> {
   public:
-    void clear();
     void run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist);
     std::string name() const;
 };

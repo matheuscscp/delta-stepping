@@ -16,7 +16,6 @@ template <typename Weight, Weight INFINITE, typename Vertex = int, Vertex nullve
 class SSSPAlgorithm {
   public:
     virtual ~SSSPAlgorithm();
-    virtual void clear() = 0;
     virtual void run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>&, Vertex, Weight*) = 0;
     virtual std::string name() const = 0;
 };
