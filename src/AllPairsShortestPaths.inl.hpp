@@ -13,15 +13,14 @@ namespace graph {
 template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
 AllPairsShortestPaths<Weight, INFINITE, Vertex, nullvertex, Size>::AllPairsShortestPaths(
   const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G,
-  std::function<void(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>&, Vertex, Weight*)> spfunc,
-  const std::string& funcname
-) : order(G.order()), result(new Weight*[order + 1]) {
+  const SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size>& ssspfunc
+) : order(G.order()), result(new Weight*[order + 1]), ssspfunc(ssspfunc) {
   for (Vertex u = 1; u <= order; u++) {
     result[u] = new Weight[order + 1];
   }
   Weight* shortest_path_tree = new Weight[order + 1];
   for (auto& u : G) {
-    spfunc(G, u.vertex, shortest_path_tree);
+    ssspfunc.run(G, u.vertex, shortest_path_tree);
     for (auto& v : G) {
       result[u.vertex][v.vertex] = shortest_path_tree[v.vertex];
     }
@@ -69,7 +68,7 @@ bool AllPairsShortestPaths<Weight, INFINITE, Vertex, nullvertex, Size>::operator
 
 template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
 void AllPairsShortestPaths<Weight, INFINITE, Vertex, nullvertex, Size>::print(FILE* fp) const {
-  fprintf(fp, "%s:\n", funcname.c_str());
+  fprintf(fp, "%s:\n", ssspfunc.name().c_str());
   for (Vertex source = 1; source <= order; source++) {
     for (Vertex target = 1; target <= order; target++) {
       Weight w = result[source][target];

@@ -8,13 +8,25 @@
 #ifndef DELTASTEPPING_HPP_
 #define DELTASTEPPING_HPP_
 
-#include "Graph.hpp"
+#include "SSSPAlgorithm.hpp"
+
+namespace graph {
 
 template <typename Weight, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
-void serialDeltaStepping(const graph::Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist);
+class SerialDeltaStepping : public SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size> {
+  public:
+    void run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) const;
+    std::string name() const;
+};
 
 template <typename Weight, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
-void parallelDeltaStepping(const graph::Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist);
+class ParallelDeltaStepping : public SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size> {
+  public:
+    void run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) const;
+    std::string name() const;
+};
+
+} // namespace graph
 
 #include "DeltaStepping.inl.hpp"
 

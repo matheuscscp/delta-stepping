@@ -1,7 +1,6 @@
 criar uma interface melhor para o modulo DeltaStepping, com:
   funcao pra controlar o Delta (de cada versao, serial e paralela)
   funcao pra obter o numero relaxacoes de cada versao
-  funcoes static para chamar cada versao do algoritmo
 
 otimizar a versao serial do delta stepping
 

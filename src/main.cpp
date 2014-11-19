@@ -25,9 +25,10 @@ static inline bool generateAndCompare() {
   // [2, maxN] vertices, weights in [1, maxWeight]
   generateGraph(G, rand()%(max_order - 1) + 2, max_weight);
   
-  IntAllPairsShortestPaths res1(G, &intDijkstra, "dijkstra");
-  IntAllPairsShortestPaths res2(G, &intSerialDeltaStepping, "serial ds");
-  IntAllPairsShortestPaths res3(G, &intParallelDeltaStepping, "parallel ds");
+  IntAllPairsShortestPaths res1(G, IntDijkstra());
+  IntAllPairsShortestPaths res2(G, IntSerialDeltaStepping());
+  IntAllPairsShortestPaths res3(G, IntParallelDeltaStepping());
+  //res1.print(stdout);
   
   return (res1 == res2);
 }

@@ -8,11 +8,9 @@
 #ifndef ALLPAIRSSHORTESTPATHS_HPP_
 #define ALLPAIRSSHORTESTPATHS_HPP_
 
-#include <functional>
-#include <string>
 #include <cstdio>
 
-#include "Graph.hpp"
+#include "SSSPAlgorithm.hpp"
 
 namespace graph {
 
@@ -21,12 +19,11 @@ class AllPairsShortestPaths {
   private:
     int order;
     Weight** result;
-    std::string funcname;
+    const SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size>& ssspfunc;
   public:
     AllPairsShortestPaths(
       const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G,
-      std::function<void(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>&, Vertex, Weight*)> spfunc,
-      const std::string& funcname
+      const SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size>& ssspfunc
     );
     ~AllPairsShortestPaths();
     bool operator==(const AllPairsShortestPaths& other) const;

@@ -14,10 +14,11 @@
 
 namespace graph {
 
-typedef AllPairsShortestPaths<int, 0x7fffffff> IntAllPairsShortestPaths;
+typedef AllPairsShortestPaths<int, 0x7fffffff>  IntAllPairsShortestPaths;
+typedef SerialDijkstra<int, 0x7fffffff>         IntDijkstra;
+typedef SerialDeltaStepping<int, 0x7fffffff>    IntSerialDeltaStepping;
+typedef ParallelDeltaStepping<int, 0x7fffffff>  IntParallelDeltaStepping;
 
 } // namespace graph
-
-#include "GraphAlgorithms.inl.hpp"
 
 #endif /* GRAPHALGORITHMS_HPP_ */

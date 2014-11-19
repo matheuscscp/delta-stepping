@@ -14,8 +14,10 @@
 
 #define DELTA 5
 
+namespace graph {
+
 template <typename Weight, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
-struct SerialDeltaStepping {
+struct SerialDeltaSteppingg {
   // in
   const graph::Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G;
   Vertex source;
@@ -27,7 +29,7 @@ struct SerialDeltaStepping {
   // out
   Weight* tent; // tentative distance. equals distance after the algorithm
   
-  SerialDeltaStepping(const graph::Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* tent) : G(G), source(source), tent(tent) {
+  SerialDeltaSteppingg(const graph::Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* tent) : G(G), source(source), tent(tent) {
     algorithm();
   }
   
@@ -97,13 +99,25 @@ struct SerialDeltaStepping {
 };
 
 template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-void serialDeltaStepping(const graph::Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) {
-  SerialDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>(G, source, dist);
+void SerialDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) const {
+  SerialDeltaSteppingg<Weight, INFINITE, Vertex, nullvertex, Size>(G, source, dist);
 }
 
 template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-void parallelDeltaStepping(const graph::Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) {
+std::string SerialDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::name() const {
+  return "Serial Delta Stepping";
+}
+
+template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+void ParallelDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) const {
   //TODO
 }
+
+template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+std::string ParallelDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::name() const {
+  return "Parallel Delta Stepping";
+}
+
+} // namespace graph
 
 #endif /* DELTASTEPPING_INL_HPP_ */
