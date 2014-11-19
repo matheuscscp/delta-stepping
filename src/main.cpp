@@ -5,59 +5,37 @@
  *      Author: Pimenta
  */
 
-#include <cstdlib>
-#include <ctime>
-
-#include "ConcreteGraph.hpp"
-#include "Helpers.hpp"
-#include "GraphAlgorithms.hpp"
-#include "ThreadManager.hpp"
+#include <map>
+#include <string>
+#include <cstdio>
 
 using namespace std;
-using namespace graph;
 
-static int max_order = 20;
-static int max_weight = 50;
-static int graphs = 1000;
-
-static inline bool generateAndCompare() {
-  IntArrayGraphMapNeighbourHood G;
-  
-  // [2, maxN] vertices, weights in [1, maxWeight]
-  generateGraph(G, rand()%(max_order - 1) + 2, max_weight);
-  
-  IntAllPairsShortestPaths res1(G, IntDijkstra());
-  IntAllPairsShortestPaths res2(G, IntSerialDeltaStepping());
-  IntAllPairsShortestPaths res3(G, IntParallelDeltaStepping());
-  
-  return (res1 == res2) && (res2 == res3);
-}
+void correctness(int argc, char** argv);
 
 int main(int argc, char** argv) {
   
-  srand(time(nullptr));
-  int delta = 1;
-  if (argc >= 2) {
-    sscanf(argv[1], "%d", &delta);
-  }
-  DeltaStepping::delta(&delta);
-  DeltaStepping::initRelaxations();
-  int n_threads = 1;
-  if (argc >= 3) {
-    sscanf(argv[2], "%d", &n_threads);
-  }
-  ThreadManager::init(n_threads);
+  map<string, void (*)(int, char**)> progs;
+  progs["correctness"] = &correctness;
   
-  int i = 0;
-  for (; i < graphs && generateAndCompare(); i++);
-  if (i < graphs) {
-    printf("erro! algum algoritmo nao esta correto\n");
+  auto usage_mode = [argv, &progs]() {
+    fprintf(stderr, "Usage mode: %s <program>\n", argv[0]);
+    fprintf(stderr, "  Programs:\n");
+    for (auto& kv : progs) {
+      fprintf(stderr, "    %s\n", kv.first.c_str());
+    }
+  };
+  
+  if (argc == 1) {
+    usage_mode();
+    return 0;
   }
-  
-  printf("relaxations: %lu\n", DeltaStepping::relaxations());
-  
-  ThreadManager::close();
-  DeltaStepping::closeRelaxations();
+  auto it = progs.find(argv[1]);
+  if (it == progs.end()) {
+    usage_mode();
+    return 0;
+  }
+  it->second(argc - 1, &argv[1]);
   
   return 0;
 }
