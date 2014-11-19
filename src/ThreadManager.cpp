@@ -29,8 +29,8 @@ class Thread {
     // outside thread functions
     Thread();
     ~Thread();
-    bool isFree() const;
-    bool work(function<void()> job);
+    bool isfree() const;
+    void dispatch(function<void()> job);
     void wait();
   private:
     // inside thread functions
@@ -57,8 +57,8 @@ Thread::Thread() : free(true) {
 }
 
 Thread::~Thread() {
-  bool freed = work([]() {});
-  if (freed) {
+  if (free) {
+    dispatch([]() {});
     pthread_join(p_thread, nullptr);
   }
   else {
@@ -69,18 +69,14 @@ Thread::~Thread() {
   pthread_mutex_destroy(&cond_mutex);
 }
 
-bool Thread::isFree() const {
+bool Thread::isfree() const {
   return free;
 }
 
-bool Thread::work(function<void()> job) {
-  if (!free) {
-    return false;
-  }
+void Thread::dispatch(function<void()> job) {
   free = false;
   this->job = job;
   sem_post(&sem);
-  return true;
 }
 
 void Thread::wait() {
@@ -128,18 +124,30 @@ void ThreadManager::close() {
   delete[] threads;
 }
 
-int ThreadManager::nThreads() {
+int ThreadManager::nthreads() {
   return n_threads;
 }
 
-bool ThreadManager::isFree(int id) {
-  return threads[id].isFree();
+bool ThreadManager::isfree(int id) {
+  return threads[id].isfree();
 }
 
-bool ThreadManager::work(int id, function<void()> job) {
-  return threads[id].work(job);
+void ThreadManager::dispatch(int id, function<void()> job) {
+  threads[id].dispatch(job);
+}
+
+void ThreadManager::dispatchall(function<void()> job) {
+  for (int id = 0; id < n_threads; id++) {
+    threads[id].dispatch(job);
+  }
 }
 
 void ThreadManager::wait(int id) {
   threads[id].wait();
+}
+
+void ThreadManager::waitall() {
+  for (int id = 0; id < n_threads; id++) {
+    threads[id].wait();
+  }
 }

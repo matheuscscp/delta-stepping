@@ -14,10 +14,12 @@ class ThreadManager {
   public:
     static void init(int n_threads);
     static void close();
-    static int nThreads();
-    static bool isFree(int id);
-    static bool work(int id, std::function<void()> job);
+    static int nthreads();
+    static bool isfree(int id);
+    static void dispatch(int id, std::function<void()> job);
+    static void dispatchall(std::function<void()> job);
     static void wait(int id);
+    static void waitall();
 };
 
 #endif /* THREADMANAGER_HPP_ */

@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
   }
   DeltaStepping::delta(&delta);
   DeltaStepping::initRelaxations();
-  int n_threads = 0;
+  int n_threads = 1;
   if (argc >= 3) {
     sscanf(argv[2], "%d", &n_threads);
   }

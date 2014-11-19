@@ -11,6 +11,8 @@
 #include <vector>
 #include <cmath>
 
+#include "ThreadManager.hpp"
+
 #define DELTA DeltaStepping::delta<Weight>()
 
 namespace graph {
@@ -117,19 +119,38 @@ void ParallelDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>
   std::list<Vertex>* light = new std::list<Vertex>[G.order() + 1];
   B.clear();
   tent = dist;
-  for (auto& v : G) {
-    std::list<Vertex>& h = heavy[v.vertex];
-    std::list<Vertex>& l = light[v.vertex];
-    for (auto w : v) {
-      if (w.weight > DELTA) {
-        h.push_back(w.vertex);
+  for (int tid = 0, nth = ThreadManager::nthreads(); tid < nth; tid++) {
+    ThreadManager::dispatch(tid, [&G, tid, nth, heavy, light, this]() {
+      Size V = G.order(), Vpernth = V/nth, rem = V%nth;
+      Vertex first = tid*Vpernth + 1, last = (tid + 1)*Vpernth;
+      if (rem != 0) {
+        Size W = Vpernth + 1;
+        if (tid < rem) {
+          first = tid*W + 1;
+          last = (tid + 1)*W;
+        }
+        else {
+          first = rem*W + (tid - rem)*Vpernth + 1;
+          last = rem*W + (tid + 1 - rem)*Vpernth;
+        }
       }
-      else {
-        l.push_back(w.vertex);
+      for (Vertex u = first; u <= last; u++) {
+        auto& v = G[u];
+        std::list<Vertex>& h = heavy[v.vertex];
+        std::list<Vertex>& l = light[v.vertex];
+        for (auto w : v) {
+          if (w.weight > DELTA) {
+            h.push_back(w.vertex);
+          }
+          else {
+            l.push_back(w.vertex);
+          }
+        }
+        tent[v.vertex] = INFINITE;
       }
-    }
-    tent[v.vertex] = INFINITE;
+    });
   }
+  ThreadManager::waitall();
   relax(source, IDENTITY);
   Size i;
   for (i = 0; i < B.size(); i++) {
