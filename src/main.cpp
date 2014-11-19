@@ -20,7 +20,7 @@ static int max_weight = 50;
 static int graphs = 1000;
 
 static inline bool generateAndCompare() {
-  IntArrayGraphArrayNeighbourHood G;
+  IntArrayGraphMapNeighbourHood G;
   
   // [2, maxN] vertices, weights in [1, maxWeight]
   generateGraph(G, rand()%(max_order - 1) + 2, max_weight);

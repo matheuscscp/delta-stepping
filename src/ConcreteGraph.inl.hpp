@@ -211,6 +211,56 @@ void ArrayGraph<NeighbourhoodType, Weight, INFINITE, Vertex, nullvertex, Size>::
   }
 }
 
+template <class NeighbourhoodType, typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+MapGraph<NeighbourhoodType, Weight, INFINITE, Vertex, nullvertex, Size>::Iterator::Iterator(typename std::map<Vertex, NeighbourhoodType>::const_iterator mapit) : Graph<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator(nullptr), mapit(mapit) {
+  
+}
+
+template <class NeighbourhoodType, typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+bool MapGraph<NeighbourhoodType, Weight, INFINITE, Vertex, nullvertex, Size>::Iterator::operator!=(const typename Graph<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator& other) const {
+  return mapit != ((Iterator&)other).mapit;
+}
+
+template <class NeighbourhoodType, typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size>& MapGraph<NeighbourhoodType, Weight, INFINITE, Vertex, nullvertex, Size>::Iterator::operator*() {
+  return (Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size>&)mapit->second;
+}
+
+template <class NeighbourhoodType, typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+typename Graph<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator& MapGraph<NeighbourhoodType, Weight, INFINITE, Vertex, nullvertex, Size>::Iterator::operator++() {
+  mapit++;
+  return *this;
+}
+
+template <class NeighbourhoodType, typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+typename Graph<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator MapGraph<NeighbourhoodType, Weight, INFINITE, Vertex, nullvertex, Size>::begin() const {
+  return typename Graph<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator(new Iterator(data.begin()));
+}
+
+template <class NeighbourhoodType, typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+typename Graph<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator MapGraph<NeighbourhoodType, Weight, INFINITE, Vertex, nullvertex, Size>::end() const {
+  return typename Graph<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator(new Iterator(data.end()));
+}
+
+template <class NeighbourhoodType, typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size>& MapGraph<NeighbourhoodType, Weight, INFINITE, Vertex, nullvertex, Size>::operator[](Vertex v) const {
+  return (Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size>&)data.at(v);
+}
+
+template <class NeighbourhoodType, typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+Size MapGraph<NeighbourhoodType, Weight, INFINITE, Vertex, nullvertex, Size>::order() const {
+  return data.size();
+}
+
+template <class NeighbourhoodType, typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+void MapGraph<NeighbourhoodType, Weight, INFINITE, Vertex, nullvertex, Size>::order(Size new_order) {
+  data.clear();
+  for (Vertex u = 1; u <= new_order; u++) {
+    data[u].vertex = u;
+    data[u].resize(new_order);
+  }
+}
+
 } // namespace graph
 
 #endif /* CONCRETEGRAPH_INL_HPP_ */
