@@ -11,6 +11,7 @@
 #include "ConcreteGraph.hpp"
 #include "Helpers.hpp"
 #include "GraphAlgorithms.hpp"
+#include "ThreadManager.hpp"
 
 using namespace std;
 using namespace graph;
@@ -36,11 +37,16 @@ int main(int argc, char** argv) {
   
   srand(time(nullptr));
   int delta = 5;
-  if (argc > 1) {
+  if (argc >= 2) {
     sscanf(argv[1], "%d", &delta);
   }
   DeltaStepping::delta(&delta);
   DeltaStepping::initRelaxations();
+  int n_threads = 0;
+  if (argc >= 3) {
+    sscanf(argv[2], "%d", &n_threads);
+  }
+  ThreadManager::init(n_threads);
   
   int i = 0;
   for (; i < graphs && generateAndCompare(); i++);
@@ -50,6 +56,7 @@ int main(int argc, char** argv) {
   
   printf("relaxations: %lu\n", DeltaStepping::relaxations());
   
+  ThreadManager::close();
   DeltaStepping::closeRelaxations();
   
   return 0;

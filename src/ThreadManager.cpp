@@ -13,16 +13,23 @@
 
 using namespace std;
 
-struct Thread {
-  bool free;
-  sem_t sem;
-  pthread_cond_t cond;
-  pthread_mutex_t cond_mutex;
-  pthread_t p_thread;
-  function<void()> job;
-  Thread();
-  ~Thread();
-  static void* func(void* arg);
+class Thread {
+  private:
+    bool free;
+    sem_t sem;
+    pthread_cond_t cond;
+    pthread_mutex_t cond_mutex;
+    pthread_t p_thread;
+    function<void()> job;
+  public:
+    Thread();
+    ~Thread();
+    bool isFree() const;
+    bool work(function<void()> job);
+    void wait();
+  private:
+    void work();
+    static void* func(void* arg);
 };
 
 static int n_threads;
@@ -36,21 +43,55 @@ Thread::Thread() : free(true) {
 }
 
 Thread::~Thread() {
-  pthread_kill(p_thread, SIGKILL);
+  bool freed = work([]() {});
+  if (freed) {
+    pthread_join(p_thread, nullptr);
+  }
+  else {
+    pthread_kill(p_thread, SIGKILL);
+  }
   sem_destroy(&sem);
   pthread_cond_destroy(&cond);
   pthread_mutex_destroy(&cond_mutex);
 }
 
+bool Thread::isFree() const {
+  return free;
+}
+
+bool Thread::work(function<void()> job) {
+  if (!free) {
+    return false;
+  }
+  free = false;
+  this->job = job;
+  sem_post(&sem);
+  return true;
+}
+
+void Thread::wait() {
+  pthread_mutex_lock(&cond_mutex);
+  if (free) {
+    pthread_mutex_unlock(&cond_mutex);
+    return;
+  }
+  pthread_cond_wait(&cond, &cond_mutex);
+  pthread_mutex_unlock(&cond_mutex);
+}
+
+void Thread::work() {
+  sem_wait(&sem);
+  job();
+  pthread_mutex_lock(&cond_mutex);
+  free = true;
+  pthread_cond_broadcast(&cond);
+  pthread_mutex_unlock(&cond_mutex);
+}
+
 void* Thread::func(void* arg) {
   Thread& thread = *((Thread*)arg);
-  while (true) {
-    sem_wait(&thread.sem);
-    thread.job();
-    pthread_mutex_lock(&thread.cond_mutex);
-    thread.free = true;
-    pthread_cond_broadcast(&thread.cond);
-    pthread_mutex_unlock(&thread.cond_mutex);
+  while (n_threads > 0) {
+    thread.work();
   }
   return nullptr;
 }
@@ -61,6 +102,7 @@ void ThreadManager::init(int n_th) {
 }
 
 void ThreadManager::close() {
+  n_threads = 0;
   delete[] threads;
 }
 
@@ -69,27 +111,13 @@ int ThreadManager::nThreads() {
 }
 
 bool ThreadManager::isFree(int id) {
-  return threads[id].free;
+  return threads[id].isFree();
 }
 
 bool ThreadManager::work(int id, function<void()> job) {
-  Thread& thread = threads[id];
-  if (!thread.free) {
-    return false;
-  }
-  thread.free = false;
-  thread.job = job;
-  sem_post(&thread.sem);
-  return true;
+  return threads[id].work(job);
 }
 
 void ThreadManager::wait(int id) {
-  Thread& thread = threads[id];
-  pthread_mutex_lock(&thread.cond_mutex);
-  if (thread.free) {
-    pthread_mutex_unlock(&thread.cond_mutex);
-    return;
-  }
-  pthread_cond_wait(&thread.cond, &thread.cond_mutex);
-  pthread_mutex_unlock(&thread.cond_mutex);
+  threads[id].wait();
 }
