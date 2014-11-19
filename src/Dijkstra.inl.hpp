@@ -13,7 +13,12 @@
 namespace graph {
 
 template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-void SerialDijkstra<Weight, INFINITE, Vertex, nullvertex, Size>::run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) const {
+void SerialDijkstra<Weight, INFINITE, Vertex, nullvertex, Size>::clear() {
+  
+}
+
+template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+void SerialDijkstra<Weight, INFINITE, Vertex, nullvertex, Size>::run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) {
   Size N = G.order();
   for (Vertex v = 1; v <= N; v++) {
     dist[v] = INFINITE;
