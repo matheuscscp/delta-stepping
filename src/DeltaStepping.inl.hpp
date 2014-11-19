@@ -22,6 +22,7 @@ inline Weight DeltaStepping::delta() {
 
 template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
 void SerialDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::relax(const Vertex& v, Weight x) {
+  DeltaStepping::incRelaxations();
   Weight& tent_v = tent[v];
   if (x < tent_v) {
     size_t floor_tent_v_delta = size_t(floor(double(tent_v)/DELTA));

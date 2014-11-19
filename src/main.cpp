@@ -45,5 +45,7 @@ int main(int argc, char** argv) {
     printf("erro! algum algoritmo nao esta correto\n");
   }
   
+  printf("relaxations: %lu\n", DeltaStepping::relaxations());
+  
   return 0;
 }
