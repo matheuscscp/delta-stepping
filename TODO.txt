@@ -1,4 +1,3 @@
-atomizar incremento de relaxacoes
 colocar incremento de relaxacoes no codigo
 otimizar a versao serial do delta stepping
 criar a versao paralela do delta stepping

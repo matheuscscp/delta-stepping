@@ -23,6 +23,7 @@ class DeltaStepping {
     template <typename Weight>
     static inline Weight delta();
     static void delta(void* new_delta);
+    static void initRelaxations();
     static uint64_t relaxations();
     static void clearRelaxations();
     static void incRelaxations();
