@@ -44,7 +44,7 @@ void SerialDijkstra<Weight, INFINITE, Vertex, nullvertex, Size>::run(const Graph
 
 template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
 std::string SerialDijkstra<Weight, INFINITE, Vertex, nullvertex, Size>::name() const {
-  return "Serial Dijkstra";
+  return "Dijkstra (serial)";
 }
 
 } // namespace graph
