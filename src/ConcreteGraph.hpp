@@ -8,8 +8,6 @@
 #ifndef CONCRETEGRAPH_HPP_
 #define CONCRETEGRAPH_HPP_
 
-#include <map>
-
 #include "Graph.hpp"
 
 namespace graph {
