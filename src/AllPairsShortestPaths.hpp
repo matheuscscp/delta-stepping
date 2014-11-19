@@ -19,7 +19,7 @@ class AllPairsShortestPaths {
   private:
     int order;
     Weight** result;
-    const SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size>& ssspfunc;
+    std::string funcname;
   public:
     AllPairsShortestPaths(
       const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G,

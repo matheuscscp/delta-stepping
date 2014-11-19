@@ -28,7 +28,6 @@ static inline bool generateAndCompare() {
   IntAllPairsShortestPaths res1(G, IntDijkstra());
   IntAllPairsShortestPaths res2(G, IntSerialDeltaStepping());
   IntAllPairsShortestPaths res3(G, IntParallelDeltaStepping());
-  //res1.print(stdout);
   
   return (res1 == res2);
 }
