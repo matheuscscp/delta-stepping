@@ -36,7 +36,7 @@ static inline bool generateAndCompare() {
 int main(int argc, char** argv) {
   
   srand(time(nullptr));
-  int delta = 5;
+  int delta = 1;
   if (argc >= 2) {
     sscanf(argv[1], "%d", &delta);
   }
