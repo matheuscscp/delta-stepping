@@ -13,6 +13,10 @@
 
 using namespace std;
 
+// =============================================================================
+// Thread class
+// =============================================================================
+
 class Thread {
   private:
     bool free;
@@ -22,18 +26,28 @@ class Thread {
     pthread_t p_thread;
     function<void()> job;
   public:
+    // outside thread functions
     Thread();
     ~Thread();
     bool isFree() const;
     bool work(function<void()> job);
     void wait();
   private:
+    // inside thread functions
     void work();
     static void* func(void* arg);
 };
 
+// =============================================================================
+// Private globals
+// =============================================================================
+
 static int n_threads;
 static Thread* threads;
+
+// =============================================================================
+// Thread :: outside thread functions
+// =============================================================================
 
 Thread::Thread() : free(true) {
   sem_init(&sem, 0, 0);
@@ -79,6 +93,10 @@ void Thread::wait() {
   pthread_mutex_unlock(&cond_mutex);
 }
 
+// =============================================================================
+// Thread :: inside thread functions
+// =============================================================================
+
 void Thread::work() {
   sem_wait(&sem);
   job();
@@ -95,6 +113,10 @@ void* Thread::func(void* arg) {
   }
   return nullptr;
 }
+
+// =============================================================================
+// ThreadManager
+// =============================================================================
 
 void ThreadManager::init(int n_th) {
   n_threads = n_th;
