@@ -5,10 +5,10 @@
  *      Author: Pimenta
  */
 
+#include "Helpers.hpp"
+
 #include <cstdio>
 #include <cstdlib>
-
-#include "Helpers.hpp"
 
 using namespace graph;
 

@@ -11,9 +11,14 @@
 #include <vector>
 #include <cmath>
 
-#define DELTA 5
+#define DELTA DeltaStepping::delta<Weight>()
 
 namespace graph {
+
+template <typename Weight>
+inline Weight DeltaStepping::delta() {
+  return *((Weight*)delta_);
+}
 
 template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
 void SerialDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::relax(const Vertex& v, Weight x) {

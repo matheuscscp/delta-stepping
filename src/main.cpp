@@ -35,6 +35,8 @@ static inline bool generateAndCompare() {
 int main(int argc, char** argv) {
   
   srand(time(nullptr));
+  int delta = 5;
+  DeltaStepping::delta(&delta);
   
   int i = 0;
   for (; i < graphs && generateAndCompare(); i++);

@@ -9,10 +9,20 @@
 #define DELTASTEPPING_HPP_
 
 #include <list>
+#include <vector>
 
 #include "SSSPAlgorithm.hpp"
 
 namespace graph {
+
+class DeltaStepping {
+  private:
+    static void* delta_;
+  public:
+    template <typename Weight>
+    static inline Weight delta();
+    static void delta(void* new_delta);
+};
 
 template <typename Weight, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
 class SerialDeltaStepping : public SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size> {
