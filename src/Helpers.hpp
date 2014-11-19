@@ -19,7 +19,7 @@ void printDirectedGraph(const graph::IntGraph& G, FILE* fp);
  * a uniform distribution.
  * G: container
  * N: number of vertices
- * max_weight: will generate weights in [1, maxWeight]
+ * max_weight: will generate weights in [1, max_weight]
  */
 void generateGraph(graph::IntGraph& G, int N, int max_weight);
 

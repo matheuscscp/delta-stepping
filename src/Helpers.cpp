@@ -5,6 +5,7 @@
  *      Author: Pimenta
  */
 
+#include <cstdio>
 #include <cstdlib>
 
 #include "Helpers.hpp"

@@ -8,119 +8,86 @@
 #ifndef CONCRETEGRAPH_HPP_
 #define CONCRETEGRAPH_HPP_
 
+#include <map>
+
 #include "Graph.hpp"
 
 namespace graph {
 
-class ArrayNeighbourhood : public Neighbourhood<int, 0x7fffffff> {
+template <typename Weight, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
+class ArrayNeighbourhood : public Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size> {
   public:
-    class Iterator : public Neighbourhood::Iterator {
+    class Iterator : public Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator {
       private:
-        Edge<int, 0x7fffffff>* ptr;
+        Edge<Weight, INFINITE, Vertex, nullvertex>* ptr;
       public:
-        Iterator(Edge<int, 0x7fffffff>* ptr);
-        bool operator!=(const Neighbourhood<int, 0x7fffffff>::Iterator& other) const;
-        Edge<int, 0x7fffffff> operator*();
-        Neighbourhood<int, 0x7fffffff>::Iterator& operator++();
+        Iterator(Edge<Weight, INFINITE, Vertex, nullvertex>* ptr);
+        bool operator!=(const typename Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator& other) const;
+        Edge<Weight, INFINITE, Vertex, nullvertex> operator*();
+        typename Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator& operator++();
     };
   private:
-    int size_;
-    Edge<int, 0x7fffffff>* data;
-    int degree_;
+    Size size_;
+    Edge<Weight, INFINITE, Vertex, nullvertex>* data;
+    Size degree_;
   public:
     ArrayNeighbourhood();
     ~ArrayNeighbourhood();
-    Neighbourhood<int, 0x7fffffff>::Iterator begin() const;
-    Neighbourhood<int, 0x7fffffff>::Iterator end() const;
-    Edge<int, 0x7fffffff> operator[](int v) const;
-    int degree() const;
-    void resize(int new_size);
-    void edge(int v, int w);
+    typename Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator begin() const;
+    typename Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator end() const;
+    Edge<Weight, INFINITE, Vertex, nullvertex> operator[](Vertex v) const;
+    Size degree() const;
+    void resize(Size new_size);
+    void edge(Vertex v, Vertex w);
 };
 
-class MapNeighbourhood : public Neighbourhood<int, 0x7fffffff> {
+template <typename Weight, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
+class MapNeighbourhood : public Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size> {
   public:
-    class Iterator : public Neighbourhood<int, 0x7fffffff>::Iterator {
+    class Iterator : public Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator {
       private:
-        std::map<int, Edge<int, 0x7fffffff>>::const_iterator mapit;
+        typename std::map<Vertex, Edge<Weight, INFINITE, Vertex, nullvertex>>::const_iterator mapit;
       public:
-        Iterator(std::map<int, Edge<int, 0x7fffffff>>::const_iterator mapit);
-        bool operator!=(const Neighbourhood<int, 0x7fffffff>::Iterator& other) const;
-        Edge<int, 0x7fffffff> operator*();
-        Neighbourhood<int, 0x7fffffff>::Iterator& operator++();
+        Iterator(typename std::map<Vertex, Edge<Weight, INFINITE, Vertex, nullvertex>>::const_iterator mapit);
+        bool operator!=(const typename Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator& other) const;
+        Edge<Weight, INFINITE, Vertex, nullvertex> operator*();
+        typename Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator& operator++();
     };
   private:
-    std::map<int, Edge<int, 0x7fffffff>> data;
+    std::map<Vertex, Edge<Weight, INFINITE, Vertex, nullvertex>> data;
   public:
-    Neighbourhood<int, 0x7fffffff>::Iterator begin() const;
-    Neighbourhood<int, 0x7fffffff>::Iterator end() const;
-    Edge<int, 0x7fffffff> operator[](int v) const;
-    int degree() const;
-    void edge(int v, int w);
+    typename Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator begin() const;
+    typename Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator end() const;
+    Edge<Weight, INFINITE, Vertex, nullvertex> operator[](Vertex v) const;
+    Size degree() const;
+    void resize(Size new_size);
+    void edge(Vertex v, Vertex w);
 };
 
-template <class NeighbourhoodType>
-class ArrayGraph : public Graph<int, 0x7fffffff> {
+template <class NeighbourhoodType, typename Weight, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
+class ArrayGraph : public Graph<Weight, INFINITE, Vertex, nullvertex, Size> {
   public:
-    class Iterator : public Graph<int, 0x7fffffff>::Iterator {
+    class Iterator : public Graph<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator {
       private:
         NeighbourhoodType* ptr;
       public:
-        Iterator(NeighbourhoodType* ptr) : Graph<int, 0x7fffffff>::Iterator(nullptr), ptr(ptr) {
-          
-        }
-        bool operator!=(const Graph<int, 0x7fffffff>::Iterator& other) const {
-          return ptr != ((Iterator&)other).ptr;
-        }
-        Neighbourhood<int, 0x7fffffff>& operator*() {
-          return *ptr;
-        }
-        Graph<int, 0x7fffffff>::Iterator& operator++() {
-          ptr++;
-          return *this;
-        }
+        Iterator(NeighbourhoodType* ptr);
+        bool operator!=(const typename Graph<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator& other) const;
+        Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size>& operator*();
+        typename Graph<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator& operator++();
     };
-  private:
-    int order_;
+  public:
+    Size order_;
     NeighbourhoodType* data;
   public:
-    ArrayGraph() : order_(0), data(new NeighbourhoodType[0]) {
-      
-    }
-    ~ArrayGraph() {
-      delete[] data;
-    }
-    Graph<int, 0x7fffffff>::Iterator begin() const {
-      return Graph<int, 0x7fffffff>::Iterator(new Iterator(data));
-    }
-    Graph<int, 0x7fffffff>::Iterator end() const {
-      return Graph<int, 0x7fffffff>::Iterator(new Iterator(data + order_));
-    }
-    Neighbourhood<int, 0x7fffffff>& operator[](int v) const {
-      return data[v - 1];
-    }
-    int order() const {
-      return order_;
-    }
-    void order(int new_order) {
-      order_ = new_order;
-      delete[] data;
-      data = new NeighbourhoodType[order_];
-      for (int i = 0; i < order_; i++) {
-        data[i].vertex = i + 1;
-      }
-    }
+    ArrayGraph();
+    ~ArrayGraph();
+    typename Graph<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator begin() const;
+    typename Graph<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator end() const;
+    Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size>& operator[](Vertex v) const;
+    Size order() const;
+    void order(Size new_order);
 };
-
-template <> inline void ArrayGraph<ArrayNeighbourhood>::order(int new_order) {
-  order_ = new_order;
-  delete[] data;
-  data = new ArrayNeighbourhood[order_];
-  for (int i = 0; i < order_; i++) {
-    data[i].vertex = i + 1;
-    data[i].resize(order_);
-  }
-}
 
 template <class NeighbourhoodType>
 class MapGraph : public Graph<int, 0x7fffffff> {
@@ -164,18 +131,19 @@ class MapGraph : public Graph<int, 0x7fffffff> {
       data.clear();
       for (int u = 1; u <= new_order; u++) {
         data[u].vertex = u;
+        data[u].resize(new_order);
       }
     }
 };
 
-template <> inline void MapGraph<ArrayNeighbourhood>::order(int new_order) {
-  data.clear();
-  for (int u = 1; u <= new_order; u++) {
-    data[u].vertex = u;
-    data[u].resize(new_order);
-  }
-}
+typedef ArrayNeighbourhood<int, 0x7fffffff>                 IntArrayNeighbourhood;
+typedef MapNeighbourhood<int, 0x7fffffff>                   IntMapNeighbourhood;
+typedef ArrayGraph<IntArrayNeighbourhood, int, 0x7fffffff>  IntArrayGraphArrayNeighbourHood;
+typedef ArrayGraph<IntMapNeighbourhood, int, 0x7fffffff>    IntArrayGraphMapNeighbourHood;
+//TODO
 
 } // namespace graph
+
+#include "ConcreteGraph.inl.hpp"
 
 #endif /* CONCRETEGRAPH_HPP_ */

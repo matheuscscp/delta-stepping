@@ -10,8 +10,6 @@
 
 #include <memory>
 #include <set>
-#include <map>
-#include <cstdio>
 
 namespace graph {
 
@@ -52,6 +50,7 @@ class Neighbourhood {
     virtual Iterator end() const = 0;
     virtual Edge<Weight, INFINITE, Vertex, nullvertex> operator[](Vertex v) const = 0;
     virtual Size degree() const = 0;
+    virtual void resize(Size new_size) = 0;
     virtual void edge(Vertex v, Weight w) = 0;
 };
 

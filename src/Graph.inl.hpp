@@ -8,6 +8,8 @@
 #ifndef GRAPH_INL_HPP_
 #define GRAPH_INL_HPP_
 
+#include <map>
+
 namespace graph {
 
 template <class VertexType, typename Weight>
