@@ -8,8 +8,9 @@
 #include <cstdlib>
 #include <ctime>
 
-#include "Dijkstra.hpp"
-#include "DeltaStepping.hpp"
+#include "ConcreteGraph.hpp"
+#include "Helpers.hpp"
+#include "GraphAlgorithms.hpp"
 
 using namespace std;
 using namespace graph;
@@ -24,9 +25,9 @@ static inline bool generateAndCompare() {
   // [2, maxN] vertices, weights in [1, maxWeight]
   generateGraph(G, rand()%(max_order - 1) + 2, max_weight);
   
-  AllPairsShortestPaths<int, 0x7fffffff> res1(G, &dijkstra<int, 0x7fffffff>, "dijkstra");
-  AllPairsShortestPaths<int, 0x7fffffff> res2(G, &serial_deltaStepping<int, 0x7fffffff>, "serial ds");
-  AllPairsShortestPaths<int, 0x7fffffff> res3(G, &parallel_deltaStepping<int, 0x7fffffff>, "parallel ds");
+  IntAllPairsShortestPaths res1(G, &intDijkstra, "dijkstra");
+  IntAllPairsShortestPaths res2(G, &intSerialDeltaStepping, "serial ds");
+  IntAllPairsShortestPaths res3(G, &intParallelDeltaStepping, "parallel ds");
   
   return (res1 == res2) && (res2 == res3);
 }

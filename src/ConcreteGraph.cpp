@@ -1,13 +1,11 @@
 /*
- * Graph.cpp
+ * ConcreteGraph.cpp
  *
- *  Created on: Nov 4, 2014
+ *  Created on: Nov 18, 2014
  *      Author: Pimenta
  */
 
-#include <cstdlib>
-
-#include "Graph.hpp"
+#include "ConcreteGraph.hpp"
 
 using namespace std;
 
@@ -141,60 +139,6 @@ void MapNeighbourhood::edge(int v, int w) {
     Edge<int, 0x7fffffff>& data_v = data[v];
     data_v.vertex = v;
     data_v.weight = w;
-  }
-}
-
-// =============================================================================
-// helper functions
-// =============================================================================
-
-void scanUndirectedGraph(Graph<int, 0x7fffffff>& G, FILE* fp) {
-  int N, M;
-  fscanf(fp, "%d %d", &N, &M);
-  G.order(N);
-  for (int m = 0; m < M; m++) {
-    int u, v, w;
-    fscanf(fp, "%d %d %d", &u, &v, &w);
-    G[u].edge(v, w);
-    G[v].edge(u, w);
-  }
-}
-
-void scanDirectedGraph(Graph<int, 0x7fffffff>& G, FILE* fp) {
-  int N, M;
-  fscanf(fp, "%d %d", &N, &M);
-  G.order(N);
-  for (int m = 0; m < M; m++) {
-    int source, target, w;
-    fscanf(fp, "%d %d %d", &source, &target, &w);
-    G[source].edge(target, w);
-  }
-}
-
-void printDirectedGraph(const Graph<int, 0x7fffffff>& G, FILE* fp) {
-  int M = 0;
-  for (auto& v : G) {
-    M += v.degree();
-  }
-  fprintf(fp, "%d %d\n", G.order(), M);
-  for (auto& source : G) {
-    for (auto target : source) {
-      fprintf(fp, "%d %d %d\n", source.vertex, target.vertex, target.weight);
-    }
-  }
-}
-
-void generateGraph(Graph<int, 0x7fffffff>& G, int N, int max_weight) {
-  G.order(N);
-  for (int u = 1; u < N; u++) {
-    for (int v = u + 1; v <= N; v++) {
-      int tmp = rand()%2;
-      if (tmp) {
-        int w = rand()%max_weight + 1;
-        G[u].edge(v, w);
-        G[v].edge(u, w);
-      }
-    }
   }
 }
 

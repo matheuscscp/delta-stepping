@@ -97,12 +97,12 @@ struct SerialDeltaStepping {
 };
 
 template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-void serial_deltaStepping(const graph::Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) {
+void serialDeltaStepping(const graph::Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) {
   SerialDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>(G, source, dist);
 }
 
 template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-void parallel_deltaStepping(const graph::Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) {
+void parallelDeltaStepping(const graph::Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) {
   //TODO
 }
 
