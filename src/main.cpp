@@ -36,6 +36,9 @@ int main(int argc, char** argv) {
   
   srand(time(nullptr));
   int delta = 5;
+  if (argc > 1) {
+    sscanf(argv[1], "%d", &delta);
+  }
   DeltaStepping::delta(&delta);
   DeltaStepping::initRelaxations();
   
