@@ -30,7 +30,7 @@ static inline bool generateAndCompare() {
   IntAllPairsShortestPaths res2(G, IntSerialDeltaStepping());
   IntAllPairsShortestPaths res3(G, IntParallelDeltaStepping());
   
-  return (res1 == res2);
+  return (res1 == res2) && (res2 == res3);
 }
 
 int main(int argc, char** argv) {
