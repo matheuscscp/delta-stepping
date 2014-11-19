@@ -9,11 +9,12 @@
 
 #include <pthread.h>
 
+static pthread_mutex_t relaxations_mutex;
+
 namespace graph {
 
 void* DeltaStepping::delta_ = nullptr;
 uint64_t DeltaStepping::relaxations_ = 0;
-pthread_mutex_t relaxations_mutex;
 
 void DeltaStepping::delta(void* new_delta) {
   delta_ = new_delta;
@@ -21,6 +22,10 @@ void DeltaStepping::delta(void* new_delta) {
 
 void DeltaStepping::initRelaxations() {
   pthread_mutex_init(&relaxations_mutex, nullptr);
+}
+
+void DeltaStepping::closeRelaxations() {
+  pthread_mutex_destroy(&relaxations_mutex);
 }
 
 uint64_t DeltaStepping::relaxations() {

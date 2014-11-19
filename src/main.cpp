@@ -50,5 +50,7 @@ int main(int argc, char** argv) {
   
   printf("relaxations: %lu\n", DeltaStepping::relaxations());
   
+  DeltaStepping::closeRelaxations();
+  
   return 0;
 }

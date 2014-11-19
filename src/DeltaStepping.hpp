@@ -24,6 +24,7 @@ class DeltaStepping {
     static inline Weight delta();
     static void delta(void* new_delta);
     static void initRelaxations();
+    static void closeRelaxations();
     static uint64_t relaxations();
     static void clearRelaxations();
     static void incRelaxations();
