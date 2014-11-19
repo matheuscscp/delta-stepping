@@ -1,2 +1,0 @@
-otimizar a versao serial do delta stepping
-criar a versao paralela do delta stepping
