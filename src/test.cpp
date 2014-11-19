@@ -18,8 +18,8 @@ using namespace graph;
 
 static int n_threads = 1;
 static int delta = 1;
-static int max_weight = 1000;
-static int order = 1000;
+static int max_weight = 100;
+static int order = 100;
 
 static inline void generateAndRun() {
   IntArrayGraphMapNeighbourHood G;
