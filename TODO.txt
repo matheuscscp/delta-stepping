@@ -1,6 +1,4 @@
-criar uma interface melhor para o modulo DeltaStepping, com:
-  funcao pra obter o numero relaxacoes de cada versao
-
+atomizar incremento de relaxacoes
+colocar incremento de relaxacoes no codigo
 otimizar a versao serial do delta stepping
-
 criar a versao paralela do delta stepping

@@ -18,10 +18,14 @@ namespace graph {
 class DeltaStepping {
   private:
     static void* delta_;
+    static uint64_t relaxations_;
   public:
     template <typename Weight>
     static inline Weight delta();
     static void delta(void* new_delta);
+    static uint64_t relaxations();
+    static void clearRelaxations();
+    static void incRelaxations();
 };
 
 template <typename Weight, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
