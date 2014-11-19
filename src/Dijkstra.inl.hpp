@@ -12,17 +12,17 @@
 
 namespace graph {
 
-template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-void SerialDijkstra<Weight, INFINITE, Vertex, nullvertex, Size>::run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) {
+template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+void SerialDijkstra<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) {
   Size N = G.order();
   for (Vertex v = 1; v <= N; v++) {
     dist[v] = INFINITE;
   }
-  dist[source] = 0;
+  dist[source] = IDENTITY;
   std::priority_queue<Edge<Weight, INFINITE, Vertex, nullvertex>> Q;
-  Q.push(Edge<Weight, INFINITE, Vertex, nullvertex>(source, 0));
+  Q.push(Edge<Weight, INFINITE, Vertex, nullvertex>(source, IDENTITY));
   
-  for (Vertex i = 0; !Q.empty() && i < N; i++) {
+  for (Size i = 0; !Q.empty() && i < N; i++) {
     Edge<Weight, INFINITE, Vertex, nullvertex> edge = Q.top();
     Q.pop();
     
@@ -42,8 +42,8 @@ void SerialDijkstra<Weight, INFINITE, Vertex, nullvertex, Size>::run(const Graph
   }
 }
 
-template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-std::string SerialDijkstra<Weight, INFINITE, Vertex, nullvertex, Size>::name() const {
+template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+std::string SerialDijkstra<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::name() const {
   return "Dijkstra (serial)";
 }
 

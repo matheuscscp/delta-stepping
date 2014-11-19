@@ -20,16 +20,16 @@ inline Weight DeltaStepping::delta() {
   return *((Weight*)delta_);
 }
 
-template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-void SerialDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::relax(const Vertex& v, Weight x) {
+template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+inline void SerialDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::relax(const Vertex& v, Weight x) {
   DeltaStepping::incRelaxations();
   Weight& tent_v = tent[v];
   if (x < tent_v) {
-    size_t floor_tent_v_delta = size_t(floor(double(tent_v)/DELTA));
+    Size floor_tent_v_delta = size_t(floor(double(tent_v)/DELTA));
     if (floor_tent_v_delta < B.size()) {
       B[floor_tent_v_delta].remove(v);
     }
-    size_t floor_x_delta = size_t(floor(double(x)/DELTA));
+    Size floor_x_delta = size_t(floor(double(x)/DELTA));
     if (floor_x_delta >= B.size()) {
       B.insert(B.end(), floor_x_delta + 1 - B.size(), std::list<Vertex>());
     }
@@ -38,10 +38,10 @@ void SerialDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::relax(cons
   }
 }
 
-template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-void SerialDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) {
-  heavy.clear();
-  light.clear();
+template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+void SerialDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) {
+  std::list<Vertex>* heavy = new std::list<Vertex>[G.order() + 1];
+  std::list<Vertex>* light = new std::list<Vertex>[G.order() + 1];
   B.clear();
   tent = dist;
   for (auto& v : G) {
@@ -57,8 +57,8 @@ void SerialDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::run(const 
     }
     tent[v.vertex] = INFINITE;
   }
-  relax(source, 0);
-  size_t i;
+  relax(source, IDENTITY);
+  Size i;
   for (i = 0; i < B.size(); i++) {
     std::list<Vertex> S;
     while (B[i].size() > 0) {
@@ -89,20 +89,22 @@ void SerialDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::run(const 
       relax(v_x.first, v_x.second);
     }
   }
+  delete[] heavy;
+  delete[] light;
 }
 
-template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-std::string SerialDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::name() const {
+template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+std::string SerialDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::name() const {
   return "Serial Delta Stepping";
 }
 
-template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-void ParallelDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) {
+template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+void ParallelDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) {
   //TODO
 }
 
-template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-std::string ParallelDeltaStepping<Weight, INFINITE, Vertex, nullvertex, Size>::name() const {
+template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+std::string ParallelDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::name() const {
   return "Parallel Delta Stepping";
 }
 

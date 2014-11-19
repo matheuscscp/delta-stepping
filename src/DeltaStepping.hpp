@@ -29,21 +29,20 @@ class DeltaStepping {
     static void incRelaxations();
 };
 
-template <typename Weight, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
+template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
 class SerialDeltaStepping : public SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size> {
   private:
     // local
-    std::map<Vertex, std::list<Vertex>> heavy, light;
     std::vector<std::list<Vertex>> B;
     // out
     Weight* tent; // tentative distance. equals distance after the algorithm
-    void relax(const Vertex& v, Weight x);
+    inline void relax(const Vertex& v, Weight x);
   public:
     void run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist);
     std::string name() const;
 };
 
-template <typename Weight, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
+template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
 class ParallelDeltaStepping : public SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size> {
   public:
     void run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist);
