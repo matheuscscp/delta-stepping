@@ -16,7 +16,6 @@ template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex = i
 class SerialDijkstra : public SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size> {
   public:
     void run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist);
-    std::string name() const;
 };
 
 } // namespace graph

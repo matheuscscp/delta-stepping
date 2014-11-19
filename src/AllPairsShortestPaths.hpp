@@ -8,8 +8,6 @@
 #ifndef ALLPAIRSSHORTESTPATHS_HPP_
 #define ALLPAIRSSHORTESTPATHS_HPP_
 
-#include <cstdio>
-
 #include "SSSPAlgorithm.hpp"
 
 namespace graph {
@@ -19,7 +17,6 @@ class AllPairsShortestPaths {
   private:
     int order;
     Weight** result;
-    std::string funcname;
   public:
     AllPairsShortestPaths(
       const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G,
@@ -28,7 +25,6 @@ class AllPairsShortestPaths {
     ~AllPairsShortestPaths();
     bool operator==(const AllPairsShortestPaths& other) const;
     bool operator!=(const AllPairsShortestPaths& other) const;
-    void print(FILE* fp) const;
 };
 
 } // namespace graph

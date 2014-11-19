@@ -40,7 +40,6 @@ class SerialDeltaStepping : public SSSPAlgorithm<Weight, INFINITE, Vertex, nullv
     inline void relax(const Vertex& v, Weight x);
   public:
     void run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist);
-    std::string name() const;
 };
 
 template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
@@ -53,7 +52,6 @@ class ParallelDeltaStepping : public SSSPAlgorithm<Weight, INFINITE, Vertex, nul
     inline void relax(const Vertex& v, Weight x);
   public:
     void run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist);
-    std::string name() const;
 };
 
 } // namespace graph

@@ -94,11 +94,6 @@ void SerialDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::
 }
 
 template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-std::string SerialDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::name() const {
-  return "Serial Delta Stepping";
-}
-
-template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
 inline void ParallelDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::relax(const Vertex& v, Weight x) {
   DeltaStepping::incRelaxations();
   Weight& tent_v = tent[v];
@@ -169,11 +164,6 @@ void ParallelDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>
   }
   delete[] heavy;
   delete[] light;
-}
-
-template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-std::string ParallelDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::name() const {
-  return "Parallel Delta Stepping";
 }
 
 } // namespace graph

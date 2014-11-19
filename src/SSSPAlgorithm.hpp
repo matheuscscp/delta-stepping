@@ -17,7 +17,6 @@ class SSSPAlgorithm {
   public:
     virtual ~SSSPAlgorithm();
     virtual void run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>&, Vertex, Weight*) = 0;
-    virtual std::string name() const = 0;
 };
 
 } // namespace graph

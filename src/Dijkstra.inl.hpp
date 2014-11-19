@@ -42,11 +42,6 @@ void SerialDijkstra<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::run(c
   }
 }
 
-template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-std::string SerialDijkstra<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::name() const {
-  return "Dijkstra (serial)";
-}
-
 } // namespace graph
 
 #endif /* DIJKSTRA_INL_HPP_ */

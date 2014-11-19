@@ -14,7 +14,7 @@ template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, 
 AllPairsShortestPaths<Weight, INFINITE, Vertex, nullvertex, Size>::AllPairsShortestPaths(
   const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G,
   const SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size>& ssspfunc
-) : order(G.order()), result(new Weight*[order + 1]), funcname(ssspfunc.name()) {
+) : order(G.order()), result(new Weight*[order + 1]) {
   for (Vertex u = 1; u <= order; u++) {
     result[u] = new Weight[order + 1];
   }
@@ -64,23 +64,6 @@ bool AllPairsShortestPaths<Weight, INFINITE, Vertex, nullvertex, Size>::operator
     }
   }
   return false;
-}
-
-template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-void AllPairsShortestPaths<Weight, INFINITE, Vertex, nullvertex, Size>::print(FILE* fp) const {
-  fprintf(fp, "%s:\n", funcname.c_str());
-  for (Vertex source = 1; source <= order; source++) {
-    for (Vertex target = 1; target <= order; target++) {
-      Weight w = result[source][target];
-      if (w == INFINITE) {
-        fprintf(fp, "  inf ");
-      }
-      else {
-        fprintf(fp, "%5d ", w);
-      }
-    }
-    fprintf(fp, "\n");
-  }
 }
 
 } // namespace graph
