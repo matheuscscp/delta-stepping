@@ -11,9 +11,10 @@
 #include "Helpers.hpp"
 
 void generate(int argc, char** argv) {
-  int order, max_weight; float edge_prob;
-  scanf("%d %d %f", &order, &max_weight, &edge_prob);
+  int order, max_weight; float edge_prob; int source;
+  scanf("%d %d %f %d", &order, &max_weight, &edge_prob, &source);
   graph::IntArrayGraphMapNeighbourHood G;
   generateGraph(G, order, max_weight, edge_prob);
   printDirectedGraph(G, stdout);
+  printf("%d\n", source);
 }
