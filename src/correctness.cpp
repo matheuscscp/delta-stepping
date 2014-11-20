@@ -18,7 +18,7 @@ using namespace graph;
 
 static int max_order = 20;
 static int max_weight = 50;
-static int graphs = 1000;
+static int graphs = 100;
 
 static inline bool generateAndCompare() {
   IntArrayGraphMapNeighbourHood G;
