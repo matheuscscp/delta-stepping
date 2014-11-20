@@ -35,18 +35,10 @@ static inline bool generateAndCompare() {
 }
 
 void correctness(int argc, char** argv) {
-  int delta = 1;
-  if (argc >= 2) {
-    sscanf(argv[1], "%d", &delta);
-  }
-  int n_threads = 1;
-  if (argc >= 3) {
-    sscanf(argv[2], "%d", &n_threads);
-  }
-  
   srand(time(nullptr));
+  int delta = 1;
   DeltaStepping::init(&delta);
-  ThreadManager::init(n_threads);
+  ThreadManager::init(1);
   
   int i = 0;
   for (; i < graphs && generateAndCompare(); i++);
