@@ -17,11 +17,9 @@ void printDirectedGraph(const graph::IntGraph& G, FILE* fp);
 /**
  * Generates loop-free weighted undirected graphs without multiple edges, using
  * a uniform distribution.
- * G: container
- * N: number of vertices
- * max_weight: will generate weights in [1, max_weight]
- * edge_prob: edge probability
  */
-void generateGraph(graph::IntGraph& G, int N, int max_weight, float edge_prob);
+void generateGraph(
+  graph::IntGraph& G, int order, int max_weight, float edge_prob
+);
 
 #endif /* HELPERS_HPP_ */
