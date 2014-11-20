@@ -12,12 +12,14 @@
 using namespace std;
 
 void correctness(int, char**);
+void generate(int, char**);
 void test(int, char**);
 
 int main(int argc, char** argv) {
   
   map<string, void (*)(int, char**)> progs;
   progs["correctness"] = &correctness;
+  progs["generate"] = &generate;
   progs["test"] = &test;
   
   auto usage_mode = [argv, &progs]() {
