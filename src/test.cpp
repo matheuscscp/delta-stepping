@@ -25,10 +25,12 @@ static int order = 100;
 static inline float readAndRun() {
   IntArrayGraphMapNeighbourHood G;
   scanDirectedGraph(G, stdin);
+  int source;
+  scanf("%d", &source);
   
   int* dist = new int[G.order() + 1];
   Stopwatch sw;
-  IntParallelDeltaStepping().run(G, 1, dist);
+  IntParallelDeltaStepping().run(G, source, dist);
   float dt = sw.time();
   delete[] dist;
   
@@ -54,7 +56,7 @@ void test(int argc, char** argv) {
   ThreadManager::init(n_threads);
   
   Stopwatch sw;
-  printf("%f\n", readAndRun());
+  printf("%f s\n", readAndRun());
   printf("time with input: %f s\n", sw.time());
   printf("total relaxations: %lu\n", DeltaStepping::relaxations());
   
