@@ -55,7 +55,8 @@ void test(int argc, char** argv) {
   
   Stopwatch sw;
   printf("%f\n", readAndRun());
-  printf("%f %lu\n", sw.time(), DeltaStepping::relaxations());
+  printf("time with input: %f s\n", sw.time());
+  printf("total relaxations: %lu\n", DeltaStepping::relaxations());
   
   ThreadManager::close();
   DeltaStepping::close();
