@@ -43,7 +43,7 @@ void correctness(int argc, char** argv) {
   int i = 0;
   for (; i < graphs && generateAndCompare(); i++);
   if (i < graphs) {
-    printf("erro! algum algoritmo nao esta correto\n");
+    printf("error! some algorithm is wrong\n");
   }
   
   ThreadManager::close();
