@@ -20,14 +20,12 @@ class DeltaStepping {
     static void* delta_;
     static uint64_t relaxations_;
   public:
+    static void init(void* delta);
+    static void close();
     template <typename Weight>
     static inline Weight delta();
-    static void delta(void* new_delta);
-    static void initRelaxations();
-    static void closeRelaxations();
-    static uint64_t relaxations();
-    static void clearRelaxations();
     static void incRelaxations();
+    static uint64_t relaxations();
 };
 
 template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>

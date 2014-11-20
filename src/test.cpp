@@ -22,10 +22,9 @@ static int delta = 1;
 static int max_weight = 100;
 static int order = 100;
 
-static inline float generateAndRun() {
-  // [2, max_order] vertices, weights in [1, max_weight]
+static inline float readAndRun() {
   IntArrayGraphMapNeighbourHood G;
-  generateGraph(G, order, max_weight);
+  scanDirectedGraph(G, stdin);
   
   int* dist = new int[G.order() + 1];
   Stopwatch sw;
@@ -37,9 +36,6 @@ static inline float generateAndRun() {
 }
 
 void test(int argc, char** argv) {
-  Stopwatch sw;
-  
-  srand(time(nullptr));
   if (argc >= 2) {
     sscanf(argv[1], "%d", &n_threads);
   }
@@ -52,15 +48,15 @@ void test(int argc, char** argv) {
   if (argc >= 5) {
     sscanf(argv[4], "%d", &order);
   }
-  DeltaStepping::delta(&delta);
-  DeltaStepping::initRelaxations();
+  
+  srand(time(nullptr));
+  DeltaStepping::init(&delta);
   ThreadManager::init(n_threads);
   
-  printf("%f\n", generateAndRun());
-  printf("relaxations: %lu\n", DeltaStepping::relaxations());
+  Stopwatch sw;
+  printf("%f\n", readAndRun());
+  printf("%f %lu\n", sw.time(), DeltaStepping::relaxations());
   
   ThreadManager::close();
-  DeltaStepping::closeRelaxations();
-  
-  printf("%f\n", sw.time());
+  DeltaStepping::close();
 }

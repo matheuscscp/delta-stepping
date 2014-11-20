@@ -20,7 +20,8 @@ void printDirectedGraph(const graph::IntGraph& G, FILE* fp);
  * G: container
  * N: number of vertices
  * max_weight: will generate weights in [1, max_weight]
+ * edge_prob: edge probability
  */
-void generateGraph(graph::IntGraph& G, int N, int max_weight);
+void generateGraph(graph::IntGraph& G, int N, int max_weight, float edge_prob);
 
 #endif /* HELPERS_HPP_ */

@@ -48,12 +48,12 @@ void printDirectedGraph(const IntGraph& G, FILE* fp) {
   }
 }
 
-void generateGraph(IntGraph& G, int N, int max_weight) {
+void generateGraph(IntGraph& G, int N, int max_weight, float edge_prob) {
   G.order(N);
   for (int u = 1; u < N; u++) {
     for (int v = u + 1; v <= N; v++) {
-      int tmp = rand()%2;
-      if (tmp) {
+      float tmp = rand()%1000 + 1.0f;
+      if (tmp <= edge_prob*1000) {
         int w = rand()%max_weight + 1;
         G[u].edge(v, w);
         G[v].edge(u, w);

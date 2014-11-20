@@ -16,30 +16,23 @@ namespace graph {
 void* DeltaStepping::delta_ = nullptr;
 uint64_t DeltaStepping::relaxations_ = 0;
 
-void DeltaStepping::delta(void* new_delta) {
-  delta_ = new_delta;
-}
-
-void DeltaStepping::initRelaxations() {
+void DeltaStepping::init(void* delta) {
   pthread_mutex_init(&relaxations_mutex, nullptr);
+  delta_ = delta;
 }
 
-void DeltaStepping::closeRelaxations() {
+void DeltaStepping::close() {
   pthread_mutex_destroy(&relaxations_mutex);
-}
-
-uint64_t DeltaStepping::relaxations() {
-  return relaxations_;
-}
-
-void DeltaStepping::clearRelaxations() {
-  relaxations_ = 0;
 }
 
 void DeltaStepping::incRelaxations() {
   pthread_mutex_lock(&relaxations_mutex);
   relaxations_++;
   pthread_mutex_unlock(&relaxations_mutex);
+}
+
+uint64_t DeltaStepping::relaxations() {
+  return relaxations_;
 }
 
 } // namespace graph
