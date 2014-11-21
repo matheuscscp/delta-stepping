@@ -36,7 +36,7 @@ static inline bool generateAndCompare() {
 
 void correctness(int argc, char** argv) {
   srand(time(nullptr));
-  ThreadManager::init(1);
+  ThreadManager::init(3);
   
   int i = 0;
   for (; i < graphs && generateAndCompare(); i++);
