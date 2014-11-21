@@ -42,7 +42,7 @@ class ParallelDeltaStepping : public SSSPAlgorithm<Weight, INFINITE, Vertex, nul
     // in
     Weight delta;
     // local
-    std::vector<std::list<Vertex>> B;
+    BucketArray<Vertex, Size> B;
     pthread_mutex_t relax_mutex;
     // out
     Weight* tent;
@@ -53,7 +53,9 @@ class ParallelDeltaStepping : public SSSPAlgorithm<Weight, INFINITE, Vertex, nul
     void run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist);
     uint64_t relaxations() const;
   private:
-    inline void relax(Vertex v, Weight x);
+    inline void findRequests(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex w, std::list<Vertex>* kind, std::list<std::pair<Vertex, Weight>>& Req);
+    inline void relaxRequests(std::list<std::pair<Vertex, Weight>>& Req);
+    inline void relax(Vertex w, Weight x);
 };
 
 } // namespace graph
