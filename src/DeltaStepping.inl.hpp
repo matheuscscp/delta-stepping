@@ -13,31 +13,11 @@
 
 #include "ThreadManager.hpp"
 
-#define DELTA DeltaStepping::delta<Weight>()
-
 namespace graph {
 
-template <typename Weight>
-inline Weight DeltaStepping::delta() {
-  return *((Weight*)delta_);
-}
-
 template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-inline void SerialDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::relax(const Vertex& v, Weight x) {
-  DeltaStepping::incRelaxations();
-  Weight& tent_v = tent[v];
-  if (x < tent_v) {
-    Size floor_tent_v_delta = Size(floor(double(tent_v)/DELTA));
-    if (floor_tent_v_delta < B.size()) {
-      B[floor_tent_v_delta].remove(v);
-    }
-    Size floor_x_delta = Size(floor(double(x)/DELTA));
-    if (floor_x_delta >= B.size()) {
-      B.insert(B.end(), floor_x_delta + 1 - B.size(), std::list<Vertex>());
-    }
-    B[floor_x_delta].push_back(v);
-    tent_v = x;
-  }
+SerialDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::SerialDeltaStepping(Weight delta) : delta(delta), tent(nullptr), relaxations_(0) {
+  
 }
 
 template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
@@ -50,7 +30,7 @@ void SerialDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::
     std::list<Vertex>& h = heavy[v.vertex];
     std::list<Vertex>& l = light[v.vertex];
     for (auto w : v) {
-      if (w.weight > DELTA) {
+      if (w.weight > delta) {
         h.push_back(w.vertex);
       }
       else {
@@ -95,21 +75,36 @@ void SerialDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::
 }
 
 template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-inline void ParallelDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::relax(const Vertex& v, Weight x) {
-  DeltaStepping::incRelaxations();
+uint64_t SerialDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::relaxations() const {
+  return relaxations_;
+}
+
+template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+inline void SerialDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::relax(const Vertex& v, Weight x) {
+  relaxations_++;
   Weight& tent_v = tent[v];
   if (x < tent_v) {
-    Size floor_tent_v_delta = Size(floor(double(tent_v)/DELTA));
+    Size floor_tent_v_delta = Size(floor(double(tent_v)/delta));
     if (floor_tent_v_delta < B.size()) {
       B[floor_tent_v_delta].remove(v);
     }
-    Size floor_x_delta = Size(floor(double(x)/DELTA));
+    Size floor_x_delta = Size(floor(double(x)/delta));
     if (floor_x_delta >= B.size()) {
       B.insert(B.end(), floor_x_delta + 1 - B.size(), std::list<Vertex>());
     }
     B[floor_x_delta].push_back(v);
     tent_v = x;
   }
+}
+
+template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+ParallelDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::ParallelDeltaStepping(Weight delta) : delta(delta), tent(nullptr), relaxations_(0) {
+  pthread_mutex_init(&relax_mutex, nullptr);
+}
+
+template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+ParallelDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::~ParallelDeltaStepping() {
+  pthread_mutex_destroy(&relax_mutex);
 }
 
 template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
@@ -140,7 +135,7 @@ void ParallelDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>
           std::list<Vertex>& h = heavy[v.vertex];
           std::list<Vertex>& l = light[v.vertex];
           for (auto w : v) {
-            if (w.weight > DELTA) {
+            if (w.weight > delta) {
               h.push_back(w.vertex);
             }
             else {
@@ -187,6 +182,31 @@ void ParallelDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>
   }
   delete[] heavy;
   delete[] light;
+}
+
+template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+uint64_t ParallelDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::relaxations() const {
+  return relaxations_;
+}
+
+template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+inline void ParallelDeltaStepping<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::relax(const Vertex& v, Weight x) {
+  pthread_mutex_lock(&relax_mutex);
+  relaxations_++;
+  Weight& tent_v = tent[v];
+  if (x < tent_v) {
+    Size floor_tent_v_delta = Size(floor(double(tent_v)/delta));
+    if (floor_tent_v_delta < B.size()) {
+      B[floor_tent_v_delta].remove(v);
+    }
+    Size floor_x_delta = Size(floor(double(x)/delta));
+    if (floor_x_delta >= B.size()) {
+      B.insert(B.end(), floor_x_delta + 1 - B.size(), std::list<Vertex>());
+    }
+    B[floor_x_delta].push_back(v);
+    tent_v = x;
+  }
+  pthread_mutex_unlock(&relax_mutex);
 }
 
 } // namespace graph

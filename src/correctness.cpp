@@ -28,16 +28,14 @@ static inline bool generateAndCompare() {
   generateGraph(G, rand()%(max_order - 1) + 2, max_weight, edge_prob);
   
   IntAllPairsShortestPaths res1(G, IntDijkstra());
-  IntAllPairsShortestPaths res2(G, IntSerialDeltaStepping());
-  IntAllPairsShortestPaths res3(G, IntParallelDeltaStepping());
+  IntAllPairsShortestPaths res2(G, IntSerialDeltaStepping(1));
+  IntAllPairsShortestPaths res3(G, IntParallelDeltaStepping(1));
   
   return (res1 == res2) && (res2 == res3);
 }
 
 void correctness(int argc, char** argv) {
   srand(time(nullptr));
-  int delta = 1;
-  DeltaStepping::init(&delta);
   ThreadManager::init(1);
   
   int i = 0;
@@ -47,5 +45,4 @@ void correctness(int argc, char** argv) {
   }
   
   ThreadManager::close();
-  DeltaStepping::close();
 }

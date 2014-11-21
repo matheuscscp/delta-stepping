@@ -15,41 +15,42 @@
 
 namespace graph {
 
-class DeltaStepping {
-  private:
-    static void* delta_;
-    static uint64_t relaxations_;
-  public:
-    static void init(void* delta);
-    static void close();
-    template <typename Weight>
-    static inline Weight delta();
-    static void incRelaxations();
-    static uint64_t relaxations();
-};
-
 template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
 class SerialDeltaStepping : public SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size> {
   private:
+    // in
+    Weight delta;
     // local
     std::vector<std::list<Vertex>> B;
     // out
-    Weight* tent; // tentative distance. equals distance after the algorithm
-    inline void relax(const Vertex& v, Weight x);
+    Weight* tent;
+    uint64_t relaxations_;
   public:
+    SerialDeltaStepping(Weight delta);
     void run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist);
+    uint64_t relaxations() const;
+  private:
+    inline void relax(const Vertex& v, Weight x);
 };
 
 template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
 class ParallelDeltaStepping : public SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size> {
   private:
+    // in
+    Weight delta;
     // local
     std::vector<std::list<Vertex>> B;
+    pthread_mutex_t relax_mutex;
     // out
-    Weight* tent; // tentative distance. equals distance after the algorithm
-    inline void relax(const Vertex& v, Weight x);
+    Weight* tent;
+    uint64_t relaxations_;
   public:
+    ParallelDeltaStepping(Weight delta);
+    ~ParallelDeltaStepping();
     void run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist);
+    uint64_t relaxations() const;
+  private:
+    inline void relax(const Vertex& v, Weight x);
 };
 
 } // namespace graph

@@ -17,7 +17,11 @@
 using namespace std;
 using namespace graph;
 
-static inline float readAndRun() {
+static int delta = 1;
+static float dt;
+static uint64_t relaxations;
+
+static inline void readAndRun() {
   IntArrayGraphMapNeighbourHood G;
   scanDirectedGraph(G, stdin);
   int source;
@@ -25,15 +29,14 @@ static inline float readAndRun() {
   
   int* dist = new int[G.order() + 1];
   Stopwatch sw;
-  IntParallelDeltaStepping().run(G, source, dist);
-  float dt = sw.time();
+  IntParallelDeltaStepping delta_stepping(delta);
+  delta_stepping.run(G, source, dist);
+  dt = sw.time();
+  relaxations = delta_stepping.relaxations();
   delete[] dist;
-  
-  return dt;
 }
 
 void test(int argc, char** argv) {
-  int delta = 1;
   if (argc >= 2) {
     sscanf(argv[1], "%d", &delta);
   }
@@ -43,14 +46,14 @@ void test(int argc, char** argv) {
   }
   
   srand(time(nullptr));
-  DeltaStepping::init(&delta);
   ThreadManager::init(n_threads);
   
   Stopwatch sw;
-  printf("%f s\n", readAndRun());
-  printf("time with input: %f s\n", sw.time());
-  printf("total relaxations: %lu\n", DeltaStepping::relaxations());
+  readAndRun();
+  float total_time = sw.time();
+  printf("%f s\n", dt);
+  printf("time with input: %f s\n", total_time);
+  printf("total relaxations: %lu\n", relaxations);
   
   ThreadManager::close();
-  DeltaStepping::close();
 }
