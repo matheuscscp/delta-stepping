@@ -22,6 +22,7 @@ void scanUndirectedGraph(IntGraph& G, FILE* fp) {
     G[u].edge(v, w);
     G[v].edge(u, w);
   }
+  G.updatemax();
 }
 
 void scanDirectedGraph(IntGraph& G, FILE* fp) {
@@ -33,6 +34,7 @@ void scanDirectedGraph(IntGraph& G, FILE* fp) {
     fscanf(fp, "%d %d %d", &source, &target, &w);
     G[source].edge(target, w);
   }
+  G.updatemax();
 }
 
 void printDirectedGraph(const IntGraph& G, FILE* fp) {
@@ -60,4 +62,5 @@ void generateGraph(IntGraph& G, int order, int max_weight, float edge_prob) {
       }
     }
   }
+  G.updatemax();
 }

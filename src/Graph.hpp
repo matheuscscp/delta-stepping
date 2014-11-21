@@ -67,12 +67,20 @@ class Graph {
         virtual Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size>& operator*();
         virtual Iterator& operator++();
     };
+  private:
+    Weight maxweight_;
+    Size maxdegree_;
+  public:
+    Graph();
     virtual ~Graph();
     virtual Iterator begin() const = 0;
     virtual Iterator end() const = 0;
     virtual Neighbourhood<Weight, INFINITE, Vertex, nullvertex, Size>& operator[](Vertex v) const = 0;
     virtual Size order() const = 0;
     virtual void order(Size new_order) = 0;
+    virtual Weight maxweight() const;
+    virtual Size maxdegree() const;
+    virtual void updatemax();
     
     template <class VertexType>
     static void build(Graph& G, const std::set<VertexType>& vertices, const std::set<GenericEdge<VertexType, Weight>>& edges);

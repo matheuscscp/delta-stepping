@@ -97,8 +97,37 @@ typename Graph<Weight, INFINITE, Vertex, nullvertex, Size>::Iterator& Graph<Weig
 }
 
 template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+Graph<Weight, INFINITE, Vertex, nullvertex, Size>::Graph() : maxweight_(0), maxdegree_(0) {
+  
+}
+
+template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
 Graph<Weight, INFINITE, Vertex, nullvertex, Size>::~Graph() {
   
+}
+
+template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+Weight Graph<Weight, INFINITE, Vertex, nullvertex, Size>::maxweight() const {
+  return maxweight_;
+}
+
+template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+Size Graph<Weight, INFINITE, Vertex, nullvertex, Size>::maxdegree() const {
+  return maxdegree_;
+}
+
+template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
+void Graph<Weight, INFINITE, Vertex, nullvertex, Size>::updatemax() {
+  for (auto& u : *this) {
+    if (u.degree() > maxdegree_) {
+      maxdegree_ = u.degree();
+    }
+    for (auto v : u) {
+      if (v.weight > maxweight_) {
+        maxweight_ = v.weight;
+      }
+    }
+  }
 }
 
 template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
