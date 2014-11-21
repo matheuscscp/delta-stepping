@@ -16,9 +16,9 @@
 using namespace std;
 using namespace graph;
 
-static int max_order = 20;
-static int max_weight = 50;
-static float edge_prob = 0.8f;
+static int max_order = 100;
+static int max_weight = 200;
+static float edge_prob = 0.5f;
 static int graphs = 100;
 
 static inline bool generateAndCompare() {
