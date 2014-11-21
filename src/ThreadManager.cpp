@@ -160,14 +160,13 @@ Thread::~Thread() {
 }
 
 void* Thread::func(void*) {
+  sem_wait(&jobs_sem);
   while (n_threads > 0) {
+    pthread_mutex_lock(&jobs_mutex);
+    shared_ptr<JobHandle> handle(jobs.front()); jobs.pop();
+    pthread_mutex_unlock(&jobs_mutex);
+    handle->run();
     sem_wait(&jobs_sem);
-    if (n_threads > 0) {
-      pthread_mutex_lock(&jobs_mutex);
-      shared_ptr<JobHandle> handle(jobs.front()); jobs.pop();
-      pthread_mutex_unlock(&jobs_mutex);
-      handle->run();
-    }
   }
   return nullptr;
 }
