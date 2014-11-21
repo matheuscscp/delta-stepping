@@ -26,7 +26,7 @@ class BucketArray {
     Size firstnonempty(Size current) const;
     void insert(Size i, Vertex v);
     void remove(Size i, Vertex v);
-    std::list<Vertex> clear(Size i);
+    Vertex remove(Size i);
 };
 
 #include "Bucket.inl.hpp"

@@ -62,11 +62,10 @@ void BucketArray<Vertex, Size>::remove(Size i, Vertex v) {
 }
 
 template <typename Vertex, typename Size>
-std::list<Vertex> BucketArray<Vertex, Size>::clear(Size i) {
-  total_vertices -= buckets[i].size();
-  std::list<Vertex> tmp = buckets[i];
-  buckets[i].clear();
-  return tmp;
+Vertex BucketArray<Vertex, Size>::remove(Size i) {
+  total_vertices--;
+  Vertex v = buckets[i].front(); buckets[i].pop_front();
+  return v;
 }
 
 #endif /* BUCKET_INL_HPP_ */
