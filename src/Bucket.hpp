@@ -13,20 +13,18 @@
 template <typename Vertex = int, typename Size = int>
 class BucketArray {
   private:
-    Size size_;
-    std::list<Vertex>* buckets;
+    std::shared_ptr<std::list<Vertex>>* buckets;
     Size total_vertices;
   public:
     BucketArray();
     ~BucketArray();
     void init(Size size);
-    Size size() const;
     Size size(Size i) const;
     bool empty() const;
     Size firstnonempty(Size current) const;
     void insert(Size i, Vertex v);
     void remove(Size i, Vertex v);
-    Vertex remove(Size i);
+    std::shared_ptr<std::list<Vertex>> pop(Size i);
 };
 
 #include "Bucket.inl.hpp"
