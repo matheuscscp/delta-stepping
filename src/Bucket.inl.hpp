@@ -9,7 +9,7 @@
 #define BUCKET_INL_HPP_
 
 template <typename Vertex, typename Size>
-BucketArray<Vertex, Size>::BucketArray() : buckets(new std::shared_ptr<std::list<Vertex>>[0]), total_vertices(0) {
+BucketArray<Vertex, Size>::BucketArray() : size_(0), buckets(new std::shared_ptr<std::list<Vertex>>[0]), total_vertices(0) {
   
 }
 
@@ -21,8 +21,9 @@ BucketArray<Vertex, Size>::~BucketArray() {
 template <typename Vertex, typename Size>
 void BucketArray<Vertex, Size>::init(Size size) {
   delete[] buckets;
-  buckets = new std::shared_ptr<std::list<Vertex>>[size];
-  for (Size i = 0; i < size; i++) {
+  size_ = size;
+  buckets = new std::shared_ptr<std::list<Vertex>>[size_];
+  for (Size i = 0; i < size_; i++) {
     buckets[i].reset(new std::list<Vertex>);
   }
   total_vertices = 0;
@@ -41,7 +42,7 @@ bool BucketArray<Vertex, Size>::empty() const {
 template <typename Vertex, typename Size>
 Size BucketArray<Vertex, Size>::firstnonempty(Size current) const {
   while (buckets[current]->size() == 0) {
-    current++;
+    current = (current + 1)%size_;
   }
   return current;
 }
@@ -54,8 +55,9 @@ void BucketArray<Vertex, Size>::insert(Size i, Vertex v) {
 
 template <typename Vertex, typename Size>
 void BucketArray<Vertex, Size>::remove(Size i, Vertex v) {
-  total_vertices--;
+  Size tmp = buckets[i]->size();
   buckets[i]->remove(v);
+  total_vertices -= (tmp - buckets[i]->size());
 }
 
 template <typename Vertex, typename Size>
@@ -64,6 +66,11 @@ std::shared_ptr<std::list<Vertex>> BucketArray<Vertex, Size>::pop(Size i) {
   std::shared_ptr<std::list<Vertex>> Q = buckets[i];
   buckets[i].reset(new std::list<Vertex>);
   return Q;
+}
+
+template <typename Vertex, typename Size>
+inline Size BucketArray<Vertex, Size>::getindex(Size j) const {
+  return 0;//FIXME
 }
 
 #endif /* BUCKET_INL_HPP_ */
