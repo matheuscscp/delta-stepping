@@ -17,19 +17,18 @@ using namespace std;
 using namespace graph;
 
 static int max_order = 100;
-static int max_weight = 200;
 static float edge_prob = 0.5f;
 static int graphs = 10;
 
 static inline bool generateAndCompare() {
-  IntArrayGraphMapNeighbourHood G;
+  FloatArrayGraphMapNeighbourhood G;
   
   // [2, max_order] vertices, weights in [1, max_weight]
-  generateGraph(G, rand()%(max_order - 1) + 2, max_weight, edge_prob);
+  generateGraph(G, rand()%(max_order - 1) + 2, edge_prob);
   
-  IntAllPairsShortestPaths res1(G, IntDijkstra());
-  IntAllPairsShortestPaths res2(G, IntSerialDeltaStepping(1));
-  IntAllPairsShortestPaths res3(G, IntParallelDeltaStepping(1));
+  FloatAllPairsShortestPaths res1(G, FloatDijkstra());
+  FloatAllPairsShortestPaths res2(G, FloatSerialDeltaStepping(1));
+  FloatAllPairsShortestPaths res3(G, FloatParallelDeltaStepping(1));
   
   return (res1 == res2) && (res2 == res3);
 }

@@ -12,32 +12,32 @@
 
 using namespace graph;
 
-void scanUndirectedGraph(IntGraph& G, FILE* fp) {
+void scanUndirectedGraph(FloatGraph& G, FILE* fp) {
   int N, M;
   fscanf(fp, "%d %d", &N, &M);
   G.order(N);
   for (int m = 0; m < M; m++) {
-    int u, v, w;
-    fscanf(fp, "%d %d %d", &u, &v, &w);
+    int u, v; float w;
+    fscanf(fp, "%d %d %f", &u, &v, &w);
     G[u].edge(v, w);
     G[v].edge(u, w);
   }
   G.updatemax();
 }
 
-void scanDirectedGraph(IntGraph& G, FILE* fp) {
+void scanDirectedGraph(FloatGraph& G, FILE* fp) {
   int N, M;
   fscanf(fp, "%d %d", &N, &M);
   G.order(N);
   for (int m = 0; m < M; m++) {
-    int source, target, w;
-    fscanf(fp, "%d %d %d", &source, &target, &w);
+    int source, target; float w;
+    fscanf(fp, "%d %d %f", &source, &target, &w);
     G[source].edge(target, w);
   }
   G.updatemax();
 }
 
-void printDirectedGraph(const IntGraph& G, FILE* fp) {
+void printDirectedGraph(const FloatGraph& G, FILE* fp) {
   int M = 0;
   for (auto& v : G) {
     M += v.degree();
@@ -45,19 +45,24 @@ void printDirectedGraph(const IntGraph& G, FILE* fp) {
   fprintf(fp, "%d %d\n", G.order(), M);
   for (auto& source : G) {
     for (auto target : source) {
-      fprintf(fp, "%d %d %d\n", source.vertex, target.vertex, target.weight);
+      fprintf(fp, "%d %d %f\n", source.vertex, target.vertex, target.weight);
     }
   }
 }
 
-void generateGraph(IntGraph& G, int order, int max_weight, float edge_prob) {
+void generateGraph(FloatGraph& G, int order, float edge_prob) {
+  int d = int(order*edge_prob);
   G.order(order);
   for (int u = 1; u < order; u++) {
     for (int v = u + 1; v <= order; v++) {
-      float tmp = rand()%1000 + 1.0f;
-      if (tmp <= edge_prob*1000) {
-        int w = rand()%max_weight + 1;
+      float tmp = (rand()%1001)/1000.0f;
+      if (tmp <= edge_prob && G[u].degree() < d) {
+        float w = (rand()%1001)/1000.0f;
         G[u].edge(v, w);
+      }
+      tmp = (rand()%1001)/1000.0f;
+      if (tmp <= edge_prob && G[v].degree() < d) {
+        float w = (rand()%1001)/1000.0f;
         G[v].edge(u, w);
       }
     }

@@ -10,17 +10,17 @@
 
 namespace graph {
 
-template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-AllPairsShortestPaths<Weight, INFINITE, Vertex, nullvertex, Size>::AllPairsShortestPaths(
-  const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G,
-  const SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size>& ssspfunc
+template <typename Weight, typename Vertex, Vertex nullvertex, typename Size>
+AllPairsShortestPaths<Weight, Vertex, nullvertex, Size>::AllPairsShortestPaths(
+  const Graph<Weight, Vertex, nullvertex, Size>& G,
+  const SSSPAlgorithm<Weight, Vertex, nullvertex, Size>& ssspfunc
 ) : order(G.order()), result(new Weight*[order + 1]) {
   for (Vertex u = 1; u <= order; u++) {
     result[u] = new Weight[order + 1];
   }
   Weight* shortest_path_tree = new Weight[order + 1];
   for (auto& u : G) {
-    ((SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size>&)ssspfunc).run(G, u.vertex, shortest_path_tree);
+    ((SSSPAlgorithm<Weight, Vertex, nullvertex, Size>&)ssspfunc).run(G, u.vertex, shortest_path_tree);
     for (auto& v : G) {
       result[u.vertex][v.vertex] = shortest_path_tree[v.vertex];
     }
@@ -28,16 +28,16 @@ AllPairsShortestPaths<Weight, INFINITE, Vertex, nullvertex, Size>::AllPairsShort
   delete[] shortest_path_tree;
 }
 
-template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-AllPairsShortestPaths<Weight, INFINITE, Vertex, nullvertex, Size>::~AllPairsShortestPaths() {
+template <typename Weight, typename Vertex, Vertex nullvertex, typename Size>
+AllPairsShortestPaths<Weight, Vertex, nullvertex, Size>::~AllPairsShortestPaths() {
   for (Vertex u = 1; u <= order; u++) {
     delete[] result[u];
   }
   delete[] result;
 }
 
-template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-bool AllPairsShortestPaths<Weight, INFINITE, Vertex, nullvertex, Size>::operator==(const AllPairsShortestPaths& other) const {
+template <typename Weight, typename Vertex, Vertex nullvertex, typename Size>
+bool AllPairsShortestPaths<Weight, Vertex, nullvertex, Size>::operator==(const AllPairsShortestPaths& other) const {
   if (order != other.order) {
     return false;
   }
@@ -51,8 +51,8 @@ bool AllPairsShortestPaths<Weight, INFINITE, Vertex, nullvertex, Size>::operator
   return true;
 }
 
-template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-bool AllPairsShortestPaths<Weight, INFINITE, Vertex, nullvertex, Size>::operator!=(const AllPairsShortestPaths& other) const {
+template <typename Weight, typename Vertex, Vertex nullvertex, typename Size>
+bool AllPairsShortestPaths<Weight, Vertex, nullvertex, Size>::operator!=(const AllPairsShortestPaths& other) const {
   if (order != other.order) {
     return true;
   }

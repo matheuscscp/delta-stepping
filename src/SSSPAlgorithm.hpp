@@ -12,11 +12,11 @@
 
 namespace graph {
 
-template <typename Weight, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
+template <typename Weight, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
 class SSSPAlgorithm {
   public:
     virtual ~SSSPAlgorithm();
-    virtual void run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>&, Vertex, Weight*) = 0;
+    virtual void run(const Graph<Weight, Vertex, nullvertex, Size>&, Vertex, Weight*) = 0;
 };
 
 } // namespace graph

@@ -12,15 +12,15 @@
 
 namespace graph {
 
-template <typename Weight, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
+template <typename Weight, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
 class AllPairsShortestPaths {
   private:
     int order;
     Weight** result;
   public:
     AllPairsShortestPaths(
-      const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G,
-      const SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size>& ssspfunc
+      const Graph<Weight, Vertex, nullvertex, Size>& G,
+      const SSSPAlgorithm<Weight, Vertex, nullvertex, Size>& ssspfunc
     );
     ~AllPairsShortestPaths();
     bool operator==(const AllPairsShortestPaths& other) const;

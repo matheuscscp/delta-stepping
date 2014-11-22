@@ -10,8 +10,8 @@
 
 namespace graph {
 
-template <typename Weight, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size>::~SSSPAlgorithm() {
+template <typename Weight, typename Vertex, Vertex nullvertex, typename Size>
+SSSPAlgorithm<Weight, Vertex, nullvertex, Size>::~SSSPAlgorithm() {
   
 }
 

@@ -22,14 +22,14 @@ static float dt;
 static uint64_t relaxations;
 
 static inline void readAndRun() {
-  IntArrayGraphMapNeighbourHood G;
+  FloatArrayGraphMapNeighbourhood G;
   scanDirectedGraph(G, stdin);
   int source;
   scanf("%d", &source);
   
-  int* dist = new int[G.order() + 1];
+  float* dist = new float[G.order() + 1];
   Stopwatch sw;
-  IntParallelDeltaStepping delta_stepping(delta);
+  FloatParallelDeltaStepping delta_stepping(delta);
   delta_stepping.run(G, source, dist);
   dt = sw.time();
   relaxations = delta_stepping.relaxations();

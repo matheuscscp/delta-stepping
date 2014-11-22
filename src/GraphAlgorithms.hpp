@@ -14,10 +14,14 @@
 
 namespace graph {
 
-typedef AllPairsShortestPaths<int, 0x7fffffff>    IntAllPairsShortestPaths;
-typedef SerialDijkstra<int, 0, 0x7fffffff>        IntDijkstra;
-typedef SerialDeltaStepping<int, 0, 0x7fffffff>   IntSerialDeltaStepping;
-typedef ParallelDeltaStepping<int, 0, 0x7fffffff> IntParallelDeltaStepping;
+typedef AllPairsShortestPaths<int>    IntAllPairsShortestPaths;
+typedef SerialDijkstra<int>           IntDijkstra;
+typedef SerialDeltaStepping<int>      IntSerialDeltaStepping;
+typedef ParallelDeltaStepping<int>    IntParallelDeltaStepping;
+typedef AllPairsShortestPaths<float>  FloatAllPairsShortestPaths;
+typedef SerialDijkstra<float>         FloatDijkstra;
+typedef SerialDeltaStepping<float>    FloatSerialDeltaStepping;
+typedef ParallelDeltaStepping<float>  FloatParallelDeltaStepping;
 
 } // namespace graph
 

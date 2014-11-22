@@ -12,10 +12,10 @@
 
 namespace graph {
 
-template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
-class SerialDijkstra : public SSSPAlgorithm<Weight, INFINITE, Vertex, nullvertex, Size> {
+template <typename Weight, typename Vertex = int, Vertex nullvertex = 0, typename Size = int>
+class SerialDijkstra : public SSSPAlgorithm<Weight, Vertex, nullvertex, Size> {
   public:
-    void run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist);
+    void run(const Graph<Weight, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist);
 };
 
 } // namespace graph

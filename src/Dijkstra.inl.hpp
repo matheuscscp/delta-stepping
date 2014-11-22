@@ -12,18 +12,18 @@
 
 namespace graph {
 
-template <typename Weight, Weight IDENTITY, Weight INFINITE, typename Vertex, Vertex nullvertex, typename Size>
-void SerialDijkstra<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::run(const Graph<Weight, INFINITE, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) {
+template <typename Weight, typename Vertex, Vertex nullvertex, typename Size>
+void SerialDijkstra<Weight, Vertex, nullvertex, Size>::run(const Graph<Weight, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist) {
   Size N = G.order();
   for (Vertex v = 1; v <= N; v++) {
-    dist[v] = INFINITE;
+    dist[v] = Weight(0x7fffffff);
   }
-  dist[source] = IDENTITY;
-  std::priority_queue<Edge<Weight, INFINITE, Vertex, nullvertex>> Q;
-  Q.push(Edge<Weight, INFINITE, Vertex, nullvertex>(source, IDENTITY));
+  dist[source] = 0;
+  std::priority_queue<Edge<Weight, Vertex, nullvertex>> Q;
+  Q.push(Edge<Weight, Vertex, nullvertex>(source, 0));
   
   for (Size i = 0; !Q.empty() && i < N; i++) {
-    Edge<Weight, INFINITE, Vertex, nullvertex> edge = Q.top();
+    Edge<Weight, Vertex, nullvertex> edge = Q.top();
     Q.pop();
     
     if (edge.weight > dist[edge.vertex]) {
@@ -36,7 +36,7 @@ void SerialDijkstra<Weight, IDENTITY, INFINITE, Vertex, nullvertex, Size>::run(c
       Weight alt = edge.weight + v.weight;
       if (alt < dist[v.vertex]) {
         dist[v.vertex] = alt;
-        Q.push(Edge<Weight, INFINITE, Vertex, nullvertex>(v.vertex, alt));
+        Q.push(Edge<Weight, Vertex, nullvertex>(v.vertex, alt));
       }
     }
   }
