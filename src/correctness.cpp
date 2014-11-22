@@ -27,8 +27,8 @@ static inline bool generateAndCompare() {
   generateGraph(G, rand()%(max_order - 1) + 2, edge_prob);
   
   FloatAllPairsShortestPaths res1(G, FloatDijkstra());
-  FloatAllPairsShortestPaths res2(G, FloatSerialDeltaStepping(1));
-  FloatAllPairsShortestPaths res3(G, FloatParallelDeltaStepping(1));
+  FloatAllPairsShortestPaths res2(G, FloatSerialDeltaStepping());
+  FloatAllPairsShortestPaths res3(G, FloatParallelDeltaStepping());
   
   return (res1 == res2) && (res2 == res3);
 }
