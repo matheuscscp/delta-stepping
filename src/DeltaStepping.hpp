@@ -8,6 +8,8 @@
 #ifndef DELTASTEPPING_HPP_
 #define DELTASTEPPING_HPP_
 
+#include <atomic>
+
 #include "SSSPAlgorithm.hpp"
 #include "Bucket.hpp"
 
@@ -40,10 +42,9 @@ class ParallelDeltaStepping : public SSSPAlgorithm<Weight, Vertex, nullvertex, S
     // local
     Weight delta;
     BucketArray<Vertex, Size> B;
-    pthread_mutex_t relax_mutex;
     // out
     Weight* tent;
-    uint64_t relaxations_;
+    std::atomic<uint64_t> relaxations_;
   public:
     ParallelDeltaStepping(Size threshold);
     ~ParallelDeltaStepping();

@@ -102,12 +102,12 @@ inline void SerialDeltaStepping<Weight, Vertex, nullvertex, Size>::relax(Vertex 
 
 template <typename Weight, typename Vertex, Vertex nullvertex, typename Size>
 ParallelDeltaStepping<Weight, Vertex, nullvertex, Size>::ParallelDeltaStepping(Size threshold) : threshold(threshold), delta(0), tent(nullptr), relaxations_(0) {
-  pthread_mutex_init(&relax_mutex, nullptr);
+  
 }
 
 template <typename Weight, typename Vertex, Vertex nullvertex, typename Size>
 ParallelDeltaStepping<Weight, Vertex, nullvertex, Size>::~ParallelDeltaStepping() {
-  pthread_mutex_destroy(&relax_mutex);
+  
 }
 
 template <typename Weight, typename Vertex, Vertex nullvertex, typename Size>
@@ -268,18 +268,24 @@ inline void ParallelDeltaStepping<Weight, Vertex, nullvertex, Size>::relax(Verte
 
 template <typename Weight, typename Vertex, Vertex nullvertex, typename Size>
 inline void ParallelDeltaStepping<Weight, Vertex, nullvertex, Size>::relaxLocal(BucketArray<Vertex, Size>& tB, Vertex w, Weight x) {
-  pthread_mutex_lock(&relax_mutex);
   relaxations_++;
-  if (x < tent[w]) {
-    tent[w] = x;
-    pthread_mutex_unlock(&relax_mutex);
-    if (tent[w] < Weight(0x7fffffff)) {
-      tB.remove(Size(floor(tent[w]/delta)), w);
+  bool swaped = false;
+  Weight tmp;
+  do {
+    tmp = tent[w];
+    if (x >= tmp) {
+      break;
+    }
+    swaped = __sync_bool_compare_and_swap((int*)&tent[w], *((int*)&tmp), *((int*)&x));
+    if (swaped) {
+      break;
+    }
+  } while (true);
+  if (swaped) {
+    if (tmp < Weight(0x7fffffff)) {
+      tB.remove(Size(floor(tmp/delta)), w);
     }
     tB.insert(Size(floor(x/delta)), w);
-  }
-  else {
-    pthread_mutex_unlock(&relax_mutex);
   }
 }
 
