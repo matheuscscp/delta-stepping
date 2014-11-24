@@ -30,13 +30,13 @@ void BucketArray<Vertex, Size>::init(Size size) {
 }
 
 template <typename Vertex, typename Size>
-Size BucketArray<Vertex, Size>::size(Size i) const {
-  return buckets[i]->size();
+Size BucketArray<Vertex, Size>::totalvertices() const {
+  return total_vertices;
 }
 
 template <typename Vertex, typename Size>
-bool BucketArray<Vertex, Size>::empty() const {
-  return total_vertices == 0;
+Size BucketArray<Vertex, Size>::size(Size i) const {
+  return buckets[i]->size();
 }
 
 template <typename Vertex, typename Size>

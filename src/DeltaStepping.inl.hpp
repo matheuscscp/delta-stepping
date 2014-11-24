@@ -42,7 +42,7 @@ void SerialDeltaStepping<Weight, Vertex, nullvertex, Size>::run(const Graph<Weig
   }
   relax(source, 0);
   Size i = 0;
-  while (!B.empty()) {
+  while (B.totalvertices() > 0) {
     i = B.firstnonempty(i);
     std::list<Vertex> R;
     while (B.size(i) > 0) {
@@ -101,7 +101,7 @@ inline void SerialDeltaStepping<Weight, Vertex, nullvertex, Size>::relax(Vertex 
 }
 
 template <typename Weight, typename Vertex, Vertex nullvertex, typename Size>
-ParallelDeltaStepping<Weight, Vertex, nullvertex, Size>::ParallelDeltaStepping() : delta(0), tent(nullptr), relaxations_(0) {
+ParallelDeltaStepping<Weight, Vertex, nullvertex, Size>::ParallelDeltaStepping(Size threshold) : threshold(threshold), delta(0), tent(nullptr), relaxations_(0) {
   pthread_mutex_init(&relax_mutex, nullptr);
 }
 
@@ -117,7 +117,8 @@ void ParallelDeltaStepping<Weight, Vertex, nullvertex, Size>::run(const Graph<We
   std::list<Vertex>* light = new std::list<Vertex>[G.order() + 1];
   std::queue<Vertex>* Q = new std::queue<Vertex>[nth];
   delta = 1.0f/G.maxdegree();
-  B.init(Size(ceil(G.maxweight()/delta))*3 + 1);//FIXME
+  Size bsize = Size(ceil(G.maxweight()/delta))*3 + 1;//FIXME
+  B.init(bsize);
   tent = dist;
   // parallel initialization
   {
@@ -156,35 +157,18 @@ void ParallelDeltaStepping<Weight, Vertex, nullvertex, Size>::run(const Graph<We
   }
   relax(source, 0);
   Size i = 0;
-  while (!B.empty()) {
+  while (B.totalvertices() > 0 && B.totalvertices() < threshold) {
     i = B.firstnonempty(i);
     std::list<Vertex> R;
     while (B.size(i) > 0) {
-      JobPool jobs;
-      std::shared_ptr<std::list<Vertex>> bucket = B.pop(i);
-      Size bucket_size = bucket->size();
-      Size div = bucket_size/nth, rem = bucket_size%nth;
-      for (int tid = 0; tid < nth; tid++) {
-        Size total = div;
-        if (tid < rem) {
-          total++;
-        }
-        auto& Q_tid = Q[tid];
-        for (Size i = 0; i < total; i++) {
-          Vertex v = bucket->front(); bucket->pop_front();
-          Q_tid.push(v);
-          R.push_back(v);
-        }
-        jobs.dispatch([&G, tid, light, Q, this]() {
-          std::list<std::pair<Vertex, Weight>> Req;
-          auto& Q_tid = Q[tid];
-          while (Q_tid.size() > 0) {
-            Vertex v = Q_tid.front(); Q_tid.pop();
-            findRequests(G, v, light, Req);
-          }
-          relaxRequests(Req);
-        });
+      std::list<std::pair<Vertex, Weight>> Req;
+      std::shared_ptr<std::list<Vertex>> tmp = B.pop(i);
+      for (auto v = tmp->begin(); v != tmp->end();) {
+        findRequests(G, *v, light, Req);
+        R.push_back(*v);
+        tmp->erase(v++);
       }
+      relaxRequests(Req);
     }
     std::list<std::pair<Vertex, Weight>> Req;
     for (auto v = R.begin(); v != R.end();) {
@@ -193,9 +177,51 @@ void ParallelDeltaStepping<Weight, Vertex, nullvertex, Size>::run(const Graph<We
     }
     relaxRequests(Req);
   }
+  // parallel section
+  BucketArray<Vertex, Size>* localB = new BucketArray<Vertex, Size>[nth];
+  {
+    JobPool jobs;
+    for (int tid = 0; tid < nth; tid++) {
+      localB[tid].init(bsize);
+    }
+    for (Size i = 0; i < bsize; i++) {
+      std::shared_ptr<std::list<Vertex>> bucket = B.pop(i);
+      for (auto v = bucket->begin(); v != bucket->end();) {
+        localB[(*v)%nth].insert(i, *v);
+        bucket->erase(v++);
+      }
+    }
+    for (int tid = 0; tid < nth; tid++) {
+      jobs.dispatch([&G, localB, tid, light, heavy, this]() {
+        BucketArray<Vertex, Size>& tB = localB[tid];
+        Size i = 0;
+        while (tB.totalvertices() > 0) {
+          i = tB.firstnonempty(i);
+          std::list<Vertex> R;
+          while (tB.size(i) > 0) {
+            std::list<std::pair<Vertex, Weight>> Req;
+            std::shared_ptr<std::list<Vertex>> tmp = tB.pop(i);
+            for (auto v = tmp->begin(); v != tmp->end();) {
+              findRequests(G, *v, light, Req);
+              R.push_back(*v);
+              tmp->erase(v++);
+            }
+            relaxRequestsLocal(tB, Req);
+          }
+          std::list<std::pair<Vertex, Weight>> Req;
+          for (auto v = R.begin(); v != R.end();) {
+            findRequests(G, *v, heavy, Req);
+            R.erase(v++);
+          }
+          relaxRequestsLocal(tB, Req);
+        }
+      });
+    }
+  }
   delete[] heavy;
   delete[] light;
   delete[] Q;
+  delete[] localB;
 }
 
 template <typename Weight, typename Vertex, Vertex nullvertex, typename Size>
@@ -221,17 +247,40 @@ inline void ParallelDeltaStepping<Weight, Vertex, nullvertex, Size>::relaxReques
 }
 
 template <typename Weight, typename Vertex, Vertex nullvertex, typename Size>
+inline void ParallelDeltaStepping<Weight, Vertex, nullvertex, Size>::relaxRequestsLocal(BucketArray<Vertex, Size>& tB, std::list<std::pair<Vertex, Weight>>& Req) {
+  for (auto it = Req.begin(); it != Req.end();) {
+    relaxLocal(tB, it->first, it->second);
+    Req.erase(it++);
+  }
+}
+
+template <typename Weight, typename Vertex, Vertex nullvertex, typename Size>
 inline void ParallelDeltaStepping<Weight, Vertex, nullvertex, Size>::relax(Vertex w, Weight x) {
-  pthread_mutex_lock(&relax_mutex);
   relaxations_++;
   if (x < tent[w]) {
+    tent[w] = x;
     if (tent[w] < Weight(0x7fffffff)) {
       B.remove(Size(floor(tent[w]/delta)), w);
     }
     B.insert(Size(floor(x/delta)), w);
-    tent[w] = x;
   }
-  pthread_mutex_unlock(&relax_mutex);
+}
+
+template <typename Weight, typename Vertex, Vertex nullvertex, typename Size>
+inline void ParallelDeltaStepping<Weight, Vertex, nullvertex, Size>::relaxLocal(BucketArray<Vertex, Size>& tB, Vertex w, Weight x) {
+  pthread_mutex_lock(&relax_mutex);
+  relaxations_++;
+  if (x < tent[w]) {
+    tent[w] = x;
+    pthread_mutex_unlock(&relax_mutex);
+    if (tent[w] < Weight(0x7fffffff)) {
+      tB.remove(Size(floor(tent[w]/delta)), w);
+    }
+    tB.insert(Size(floor(x/delta)), w);
+  }
+  else {
+    pthread_mutex_unlock(&relax_mutex);
+  }
 }
 
 } // namespace graph

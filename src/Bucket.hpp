@@ -20,8 +20,8 @@ class BucketArray {
     BucketArray();
     ~BucketArray();
     void init(Size size);
+    Size totalvertices() const;
     Size size(Size i) const;
-    bool empty() const;
     Size firstnonempty(Size current) const;
     void insert(Size i, Vertex v);
     void remove(Size i, Vertex v);
