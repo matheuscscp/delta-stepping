@@ -101,7 +101,7 @@ inline void SerialDeltaStepping<Weight, Vertex, nullvertex, Size>::relax(Vertex 
 }
 
 template <typename Weight, typename Vertex, Vertex nullvertex, typename Size>
-ParallelDeltaStepping<Weight, Vertex, nullvertex, Size>::ParallelDeltaStepping(Size threshold) : threshold(threshold), delta(0), tent(nullptr), relaxations_(0) {
+ParallelDeltaStepping<Weight, Vertex, nullvertex, Size>::ParallelDeltaStepping(Size threshold, Weight delta) : threshold(threshold), delta(delta), tent(nullptr), relaxations_(0) {
   
 }
 
@@ -116,7 +116,7 @@ void ParallelDeltaStepping<Weight, Vertex, nullvertex, Size>::run(const Graph<We
   std::list<Vertex>* heavy = new std::list<Vertex>[G.order() + 1];
   std::list<Vertex>* light = new std::list<Vertex>[G.order() + 1];
   std::queue<Vertex>* Q = new std::queue<Vertex>[nth];
-  delta = 1.0f/G.maxdegree();
+  //FIXME delta = 1.0f/G.maxdegree();
   Size bsize = Size(ceil(G.maxweight()/delta))*3 + 1;//FIXME
   B.init(bsize);
   tent = dist;

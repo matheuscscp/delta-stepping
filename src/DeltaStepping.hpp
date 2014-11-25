@@ -46,7 +46,7 @@ class ParallelDeltaStepping : public SSSPAlgorithm<Weight, Vertex, nullvertex, S
     Weight* tent;
     std::atomic<uint64_t> relaxations_;
   public:
-    ParallelDeltaStepping(Size threshold);
+    ParallelDeltaStepping(Size threshold, Weight delta);
     ~ParallelDeltaStepping();
     void run(const Graph<Weight, Vertex, nullvertex, Size>& G, Vertex source, Weight* dist);
     uint64_t relaxations() const;

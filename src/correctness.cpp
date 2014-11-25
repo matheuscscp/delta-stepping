@@ -28,7 +28,7 @@ static inline bool generateAndCompare() {
   
   FloatAllPairsShortestPaths res1(G, FloatDijkstra());
   FloatAllPairsShortestPaths res2(G, FloatSerialDeltaStepping());
-  FloatAllPairsShortestPaths res3(G, FloatParallelDeltaStepping(1));
+  FloatAllPairsShortestPaths res3(G, FloatParallelDeltaStepping(1, 1.0f/50));
   
   return (res1 == res2) && (res2 == res3);
 }

@@ -1,6 +1,5 @@
 balanceamento de carga
 profiling
-gerar grafos diferentes
 procurar modelos de grafos usados na literatura
 variar o delta
 variar o threshold

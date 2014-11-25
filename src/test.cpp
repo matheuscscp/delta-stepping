@@ -18,6 +18,7 @@ using namespace std;
 using namespace graph;
 
 static int threshold = 1000;
+static float delta = 1.0f/300;
 static float dt;
 static uint64_t relaxations;
 
@@ -29,11 +30,24 @@ static inline void readAndRun() {
   
   float* dist = new float[G.order() + 1];
   Stopwatch sw;
-  FloatParallelDeltaStepping delta_stepping(threshold);
+  FloatParallelDeltaStepping delta_stepping(threshold, delta);
   delta_stepping.run(G, source, dist);
   dt = sw.time();
   relaxations = delta_stepping.relaxations();
+  
+  float* distd = new float[G.order() + 1];
+  FloatDijkstra dijk;
+  dijk.run(G, source, distd);
+  
+  for (int v = 1; v <= G.order(); v++) {
+    if (dist[v] != distd[v]) {
+      printf("erro: %f %f\n", dist[v], distd[v]);
+      break;
+    }
+  }
+  
   delete[] dist;
+  delete[] distd;
 }
 
 void test(int argc, char** argv) {
@@ -43,6 +57,9 @@ void test(int argc, char** argv) {
   }
   if (argc >= 3) {
     sscanf(argv[2], "%d", &threshold);
+  }
+  if (argc >= 4) {
+    sscanf(argv[3], "%f", &delta);
   }
   
   srand(time(nullptr));
