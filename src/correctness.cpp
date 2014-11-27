@@ -24,7 +24,7 @@ static inline bool generateAndCompare() {
   FloatArrayGraphMapNeighbourhood G;
   
   // [2, max_order] vertices, weights in [1, max_weight]
-  generateGraph(G, rand()%(max_order - 1) + 2, edge_prob);
+  generateERGraph(G, rand()%(max_order - 1) + 2, edge_prob);
   
   FloatAllPairsShortestPaths res1(G, FloatDijkstra());
   FloatAllPairsShortestPaths res2(G, FloatSerialDeltaStepping());

@@ -18,6 +18,7 @@ void printDirectedGraph(const graph::FloatGraph& G, FILE* fp);
  * Generates loop-free weighted undirected graphs without multiple edges, using
  * a uniform distribution.
  */
-void generateGraph(graph::FloatGraph& G, int order, float edge_prob);
+void generateERGraph(graph::FloatGraph& G, int order, float edge_prob);
+void generateSWGraph(graph::FloatGraph& G, int order, int d);
 
 #endif /* HELPERS_HPP_ */

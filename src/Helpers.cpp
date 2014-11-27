@@ -50,7 +50,7 @@ void printDirectedGraph(const FloatGraph& G, FILE* fp) {
   }
 }
 
-void generateGraph(FloatGraph& G, int order, float edge_prob) {
+void generateERGraph(FloatGraph& G, int order, float edge_prob) {
   int d = int(order*edge_prob);
   G.order(order);
   for (int u = 1; u < order; u++) {
@@ -65,6 +65,30 @@ void generateGraph(FloatGraph& G, int order, float edge_prob) {
         float w = (rand()%1001)/1000.0f;
         G[v].edge(u, w);
       }
+    }
+  }
+  G.updatemax();
+}
+
+void generateSWGraph(FloatGraph& G, int order, int d) {
+  G.order(order);
+  int halfd = d/2;
+  for (int u = 1; u <= order; u++) {
+    for (int v = u - halfd; v < u; v++) {
+      int vtmp = v;
+      if (vtmp < 1) {
+        vtmp += order + 1;
+      }
+      float w = (rand()%1001)/1000.0f;
+      G[u].edge(vtmp, w);
+    }
+    for (int v = u + 1; v <= u + halfd; v++) {
+      int vtmp = v;
+      if (vtmp > order) {
+        vtmp -= order;
+      }
+      float w = (rand()%1001)/1000.0f;
+      G[u].edge(vtmp, w);
     }
   }
   G.updatemax();
