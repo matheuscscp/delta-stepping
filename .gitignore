@@ -3,4 +3,8 @@
 .settings
 Debug
 parallel-programming-final-project
-in.txt
+gmon.out
+ER1.txt
+ER2.txt
+SW1.txt
+SW2.txt
