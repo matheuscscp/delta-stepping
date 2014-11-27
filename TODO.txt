@@ -1,5 +1,6 @@
-procurar modelos de grafos usados na literatura
-balanceamento de carga
-variar o threshold
-variar o delta
+variar nthreads e threshold (verificar bom threshold)
+variar nthreads e delta (verificar bom delta)
+variar numero de threads (verificar escalabilidade e load-balancing)
+gerar grafos small world
+variar grafos (verificar ganho de speedup)
 profiling
