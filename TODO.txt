@@ -1,4 +1,3 @@
-gerar grafos small world
 para cada grafo ER ou SW:
 	variar delta (verificar bom delta)
 	variar nthreads e threshold (verificar ganho de speedup, bom threshold, load-balancing e escalabilidade forte)
