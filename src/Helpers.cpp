@@ -77,7 +77,7 @@ void generateSWGraph(FloatGraph& G, int order, int d) {
     for (int v = u - halfd; v < u; v++) {
       int vtmp = v;
       if (vtmp < 1) {
-        vtmp += order + 1;
+        vtmp += order;
       }
       float w = (rand()%1001)/1000.0f;
       G[u].edge(vtmp, w);
