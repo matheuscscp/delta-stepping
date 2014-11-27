@@ -12,6 +12,7 @@
 #include <cmath>
 
 #include "ThreadManager.hpp"
+#include "Time.hpp"
 
 namespace graph {
 
@@ -193,7 +194,9 @@ void ParallelDeltaStepping<Weight, Vertex, nullvertex, Size>::run(const Graph<We
     }
     for (int tid = 0; tid < nth; tid++) {
       jobs.dispatch([&G, localB, tid, light, heavy, this]() {
+        Stopwatch sw;
         BucketArray<Vertex, Size>& tB = localB[tid];
+        printf("tid=%d: %d vertices\n", tid, tB.totalvertices());
         Size i = 0;
         while (tB.totalvertices() > 0) {
           i = tB.firstnonempty(i);
@@ -215,6 +218,7 @@ void ParallelDeltaStepping<Weight, Vertex, nullvertex, Size>::run(const Graph<We
           }
           relaxRequestsLocal(tB, Req);
         }
+        printf("tid=%d: %f s\n", tid, sw.time());
       });
     }
   }
