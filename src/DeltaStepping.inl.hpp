@@ -26,7 +26,7 @@ void SerialDeltaStepping<Weight, Vertex, nullvertex, Size>::run(const Graph<Weig
   std::list<Vertex>* heavy = new std::list<Vertex>[G.order() + 1];
   std::list<Vertex>* light = new std::list<Vertex>[G.order() + 1];
   delta = 1.0f/G.maxdegree();
-  B.init(Size(ceil(G.maxweight()/delta))*3 + 1);//FIXME
+  B.init(Size(ceil(G.maxweight()/delta))+ 1);
   tent = dist;
   for (auto& v : G) {
     std::list<Vertex>& h = heavy[v.vertex];
@@ -117,8 +117,7 @@ void ParallelDeltaStepping<Weight, Vertex, nullvertex, Size>::run(const Graph<We
   std::list<Vertex>* heavy = new std::list<Vertex>[G.order() + 1];
   std::list<Vertex>* light = new std::list<Vertex>[G.order() + 1];
   std::queue<Vertex>* Q = new std::queue<Vertex>[nth];
-  //FIXME delta = 1.0f/G.maxdegree();
-  Size bsize = Size(ceil(G.maxweight()/delta))*3 + 1;//FIXME
+  Size bsize = Size(ceil(G.maxweight()/delta)) + 1;
   B.init(bsize);
   tent = dist;
   // parallel initialization

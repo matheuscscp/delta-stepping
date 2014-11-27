@@ -22,11 +22,11 @@ static float delta = 1.0f/300;
 static float dt;
 static uint64_t relaxations;
 
-static inline void readAndRun() {
+static inline void readAndRun(FILE* fp) {
   FloatArrayGraphMapNeighbourhood G;
-  scanDirectedGraph(G, stdin);
+  scanDirectedGraph(G, fp);
   int source;
-  scanf("%d", &source);
+  fscanf(fp, "%d", &source);
   
   float* dist = new float[G.order() + 1];
   Stopwatch sw;
@@ -65,9 +65,13 @@ void test(int argc, char** argv) {
   srand(time(nullptr));
   ThreadManager::init(n_threads);
   
+  FILE* fp = fopen(argv[4], "r");
   Stopwatch sw;
-  readAndRun();
+  readAndRun(fp);
   float total_time = sw.time();
+  if (fp != stdin) {
+    fclose(fp);
+  }
   printf("%f s\n", dt);
   printf("time with input: %f s\n", total_time);
   printf("total relaxations: %lu\n", relaxations);
