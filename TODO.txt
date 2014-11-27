@@ -1,6 +1,6 @@
-variar nthreads e threshold (verificar bom threshold)
-variar nthreads e delta (verificar bom delta)
-variar numero de threads (verificar escalabilidade e load-balancing)
 gerar grafos small world
-variar grafos (verificar ganho de speedup)
+para cada grafo ER ou SW:
+	variar delta (verificar bom delta)
+	variar nthreads e threshold (verificar ganho de speedup, bom threshold, load-balancing e escalabilidade forte)
+	dobrar nthreads e tamanho do grafo (verificar escalabilidade fraca)
 profiling
